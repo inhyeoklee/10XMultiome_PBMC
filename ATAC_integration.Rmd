@@ -1,0 +1,227 @@
+---
+title: "ATAC_integration"
+output: html_document
+date: "2024-01-02"
+---
+
+Installing libraries
+```{r}
+.libPaths()
+# usethis::create_github_token()
+# usethis::edit_r_environ()
+# Open the .Rprofile file in my C:/Users/…/Documents directory with Notepad++ and remove the line ‘source(‘renv/activate.R’)’ when in need for renv deactivation.
+
+BiocManager::install("SummarizedExperiment")
+BiocManager::install("GenomicFeatures")
+BiocManager::install("AnnotationDbi")
+
+devtools::install_github("mojaveazure/seurat-object", "seurat5")
+devtools::install_github("satijalab/seurat", "seurat5")
+remotes::install_github("satijalab/seurat-data", "seurat5", quiet = TRUE)
+remotes::install_github("satijalab/azimuth", quiet = TRUE)
+remotes::install_github("satijalab/seurat-wrappers", "seurat5", quiet = TRUE)
+remotes::install_github("stuart-lab/signac", quiet = TRUE)
+
+# setRepositories(ind = 1:3, addURLs = c('https://satijalab.r-universe.dev', 'https://bnprks.r-universe.dev/'))
+# install.packages(c("BPCells", "presto", "glmGamPoi"))
+# BiocManager::install("TFBSTools", type = "source", force = TRUE)
+
+# remove.packages("Matrix")
+# remove.packages("irlba")
+install.packages("Matrix", type = "source")
+install.packages("irlba", type = "source")
+
+# BiocManager::install("EnsDb.Hsapiens.v86")
+# BiocManager::install("biovizBase")
+```
+
+Loading libraries
+```{r}
+library(Signac)
+library(Seurat)
+library(SeuratDisk)
+library(SeuratData)
+library(GenomicRanges)
+library(future)
+library(EnsDb.Hsapiens.v86)
+library(BSgenome.Hsapiens.UCSC.hg38)
+
+plan("multisession", workers = 115)
+options(future.globals.maxSize = 100000 * 1024^2) # for 100 Gb RAM
+```
+
+Creating a common peak set
+```{r}
+# read in peak sets
+peaks_280 <- read.table(
+  file = "/home/tjq4954/Multiome_PBMC/Data/multiome_280/atac_peaks.bed",
+  col.names = c("chr", "start", "end")
+)
+peaks_302 <- read.table(
+  file = "/home/tjq4954/Multiome_PBMC/Data/multiome_302/atac_peaks.bed",
+  col.names = c("chr", "start", "end")
+)
+peaks_72 <- read.table(
+  file = "/home/tjq4954/Multiome_PBMC/Data/multiome_72/atac_peaks.bed",
+  col.names = c("chr", "start", "end")
+)
+peaks_203 <- read.table(
+  file = "/home/tjq4954/Multiome_PBMC/Data/multiome_203/atac_peaks.bed",
+  col.names = c("chr", "start", "end")
+)
+peaks_271 <- read.table(
+  file = "/home/tjq4954/Multiome_PBMC/Data/multiome_271/atac_peaks.bed",
+  col.names = c("chr", "start", "end")
+)
+peaks_294 <- read.table(
+  file = "/home/tjq4954/Multiome_PBMC/Data/multiome_294/atac_peaks.bed",
+  col.names = c("chr", "start", "end")
+)
+
+# convert to genomic ranges
+gr.280 <- makeGRangesFromDataFrame(peaks_280)
+gr.302 <- makeGRangesFromDataFrame(peaks_302)
+gr.72 <- makeGRangesFromDataFrame(peaks_72)
+gr.203 <- makeGRangesFromDataFrame(peaks_203)
+gr.271 <- makeGRangesFromDataFrame(peaks_271)
+gr.294 <- makeGRangesFromDataFrame(peaks_294)
+
+# Create a unified set of peaks to quantify in each dataset
+combined.peaks <- reduce(x = c(gr.280, gr.302, gr.72, gr.203, gr.271, gr.294))
+
+# Filter out bad peaks based on length
+peakwidths <- width(combined.peaks)
+combined.peaks <- combined.peaks[peakwidths  < 10000 & peakwidths > 20]
+combined.peaks
+```
+
+Creating fragment objects & Quantifying peaks & Creating Seurat objects
+```{r}
+# get gene annotations for hg38
+annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86)
+genome(annotations) <- "hg38"
+seqlevelsStyle(annotations) <- 'UCSC'
+seqlevels(annotations) <- paste0('chr', seqlevels(annotations))
+
+# Define Sample IDs
+samples <- c("280", "302", "72", "203", "271", "294")
+
+process_atac <- function(sample_id) {
+  # Define file paths
+  metadata_file <- paste0("/home/tjq4954/Multiome_PBMC/Data/multiome_", sample_id, "/per_barcode_metrics.csv")
+  fragment_file <- paste0("/home/tjq4954/Multiome_PBMC/Data/multiome_", sample_id, "/atac_fragments.tsv.gz")
+  
+  # Check if metadata and fragment files exist
+  if (!file.exists(metadata_file)) {
+    stop("Metadata file does not exist: ", metadata_file)
+  }
+  if (!file.exists(fragment_file)) {
+    stop("Fragment file does not exist: ", fragment_file)
+  }
+
+  # Load metadata
+  md <- read.table(file = metadata_file, stringsAsFactors = FALSE, sep = ",", header = TRUE, row.names = 1)[-1,]
+  md <- md[md$is_cell == 1, ]
+  md <- md[md$excluded_reason == 0, ]
+  
+  # Create fragment object
+  frags <- CreateFragmentObject(path = fragment_file, cells = rownames(md))
+  
+  # Quantify peaks
+  counts <- FeatureMatrix(fragments = frags, features = combined.peaks, cells = rownames(md))
+  
+  # Create the Seurat object
+  assay <- CreateChromatinAssay(counts, sep = c(":", "-"), fragments = frags, annotation = annotations)
+  seurat_object <- CreateSeuratObject(assay, assay = "ATAC", meta.data = md)
+  
+  # Add dataset identifier
+  seurat_object$dataset <- paste0('pbmcatac_', sample_id)
+  
+  return(seurat_object)
+}
+
+# Apply the function to each sample
+seurat_objects <- lapply(samples, process_atac)
+
+# Define group information for each sample
+sample_to_group <- list("280" = "control", "302" = "control", 
+                        "72" = "case", "203" = "case", "271" = "case", "294" = "case")
+
+# Add group information to each Seurat object
+for (i in 1:length(samples)) {
+  seurat_objects[[i]]$group <- sample_to_group[[samples[i]]]
+}
+
+# Save Seurat Objects
+save_dir <- "/home/tjq4954/Multiome_PBMC/Data/atac"
+
+for (i in seq_along(seurat_objects)) {
+  save_path <- file.path(save_dir, paste0("seurat_object_", samples[i], ".h5Seurat"))
+  SaveH5Seurat(seurat_objects[[i]], filename = save_path, overwrite = TRUE)
+}
+```
+
+Merging Seurat objects
+```{r}
+# Initialize the merged Seurat object with the first one
+load_dir <- "/home/tjq4954/Multiome_PBMC/Data/atac"
+
+# Load each Seurat object from the H5 files and store in a list
+seurat_objects <- list()
+for (sample_id in samples) {
+  load_path <- file.path(load_dir, paste0("seurat_object_", sample_id, ".h5Seurat"))
+  seurat_objects[[sample_id]] <- LoadH5Seurat(load_path)
+}
+
+# Merge
+pbmc.atac <- merge(
+  x = seurat_objects[["280"]],
+  y = list(seurat_objects[["302"]],
+           seurat_objects[["72"]],
+           seurat_objects[["203"]],
+           seurat_objects[["271"]],
+           seurat_objects[["294"]]))
+
+```
+
+Further downstream processing
+```{r}
+pbmc.atac <- RunTFIDF(pbmc.atac)
+pbmc.atac <- FindTopFeatures(pbmc.atac, min.cutoff = 5)
+pbmc.atac <- RunSVD(pbmc.atac)
+DepthCor(pbmc.atac)
+
+# trimming the 1st Latent Semantic Indexing as this is likely technical variation
+pbmc.atac <- RunUMAP(pbmc.atac, dims = 2:50, reduction = 'lsi')
+pbmc.atac <- FindNeighbors(object = pbmc.atac, reduction = 'lsi', dims = 2:30)
+pbmc.atac <- FindClusters(object = pbmc.atac, verbose = FALSE, algorithm = 3)
+```
+
+Sanity-check visualizations
+```{r}
+DimPlot(pbmc.atac, group.by = 'dataset', pt.size = 0.1)
+DimPlot(object = pbmc.atac, label = TRUE) + NoLegend()
+
+CoveragePlot(
+  object = pbmc.atac,
+  group.by = 'dataset',
+  region = "chr14-99700000-99760000"
+)
+
+```
+
+Saving the Seurat object
+```{r}
+# Specify the full path with the filename for the RDS file
+save_path <- "/home/tjq4954/Multiome_PBMC/Data/atac/pbmc.atac.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc.atac, file = save_path)
+
+# Save as S5 object
+# save_path <- "/home/tjq4954/Multiome_PBMC/Data/atac/pbmc.atac.h5Seurat"
+# SaveH5Seurat(pbmc.atac, filename = save_path, overwrite = TRUE)
+```
+
+```{r}
+sessionInfo()
+```
