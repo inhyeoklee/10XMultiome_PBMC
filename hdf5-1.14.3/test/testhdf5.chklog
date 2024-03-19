@@ -1,0 +1,40 @@
+============================
+Test log for testhdf5 
+============================
+
+For help use: /home/tjq4954/Multiome_PBMC/hdf5-1.14.3/test/.libs/lt-testhdf5 -help
+Linked with hdf5 version 1.14 release 3
+Testing  -- Configure definitions (config) 
+Testing  -- H5system routines (h5system) 
+Testing  -- Encoding/decoding metadata (metadata) 
+Testing  -- Checksum algorithm (checksum) 
+Testing  -- Skip Lists (skiplist) 
+Testing  -- Reference Counted Strings (refstr) 
+Testing  -- Low-Level File I/O (file) 
+Testing  -- Generic Object Functions (objects) 
+Testing  -- Dataspaces (h5s) 
+Testing  -- Dataspace coordinates (coords) 
+Testing  -- Shared Object Header Messages (sohm) 
+Testing  -- Attributes (attr) 
+Testing  -- Selections (select) 
+Testing  -- Time Datatypes (time) 
+Testing  -- Deprecated References (ref_deprec) 
+Testing  -- References (ref) 
+Testing  -- Variable-Length Datatypes (vltypes) 
+Testing  -- Variable-Length Strings (vlstrings) 
+Testing  -- Group & Attribute Iteration (iterate) 
+Testing  -- Array Datatypes (array) 
+Testing  -- Generic Properties (genprop) 
+Testing  -- UTF-8 Encoding (unicode) 
+Testing  -- User-Created Identifiers (id) 
+Testing  -- Miscellaneous (misc) 
+
+
+All tests were successful. 
+
+
+Cleaning Up temp files...
+
+
+Finished testing testhdf5 
+============================

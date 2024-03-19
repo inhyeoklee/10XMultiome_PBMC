@@ -1,0 +1,24 @@
+============================
+Test log for vol 
+============================
+Testing basic Virtual Object Layer (VOL) functionality.
+Testing VOL registration                                               PASSED
+Testing dynamically registering optional operations                    PASSED
+Testing Native VOL connector initialization                            PASSED
+Testing Basic VOL file operations                                      PASSED
+Testing Basic VOL group operations                                     PASSED
+Testing Basic VOL dataset operations                                   PASSED
+Testing Basic VOL attribute operations                                 PASSED
+Testing Basic VOL object operations                                    PASSED
+Testing Basic VOL link operations                                      PASSED
+Testing Basic VOL datatype operations                                  PASSED
+Testing Async VOL props                                                PASSED
+Testing VOL capability flags                                           PASSED
+Testing getting connector name                                         PASSED
+Testing failure of calling H5VLwrap_register                           PASSED
+Testing conversion between a VOL info and a string                     PASSED
+Testing H5VLquery_optional                                             PASSED
+All Virtual Object Layer (VOL) tests passed.
+
+Finished testing vol 
+============================

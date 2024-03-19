@@ -1,0 +1,8 @@
+============================
+Test log for s3comms 
+============================
+Testing S3Communications functionality.
+SKIPPED - read-only S3 VFD not built
+
+Finished testing s3comms 
+============================

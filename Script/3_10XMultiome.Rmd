@@ -1,0 +1,773 @@
+---
+title: "10XMultiome"
+output: html_document
+date: "2024-01-04"
+---
+
+Loading libraries
+```{r}
+library(Seurat)
+library(SeuratDisk)
+library(SeuratObject)
+library(SeuratData)
+library(Signac)
+library(GenomicRanges)
+library(future)
+library(EnsDb.Hsapiens.v86)
+library(Azimuth)
+library(BSgenome.Hsapiens.UCSC.hg38)
+
+# setRepositories(ind = 1:3, addURLs = c('https://satijalab.r-universe.dev', 'https://bnprks.r-universe.dev/'))
+# install.packages(c("BPCells", "presto", "glmGamPoi"))
+# BiocManager::install("TFBSTools", type = "source", force = TRUE)
+
+# plan("multisession", workers = 64)
+# options(future.globals.maxSize = 60000 * 1024^2) # for 60 Gb RAM
+```
+
+Merging objects
+```{r}
+# Load the ATAC and RNA objects
+pbmc.atac <- readRDS("/home/tjq4954/Multiome_PBMC/Data/atac/pbmc.atac.rds")
+pbmc.rna <- readRDS("/home/tjq4954/Multiome_PBMC/Data/rna/pbmc.rna.rds")
+
+# Check if the cell names are formatted the same
+identical(colnames(pbmc.atac), colnames(pbmc.rna))
+
+# Merging objects
+pbmc.rna[['ATAC']] <- pbmc.atac[['ATAC']] # assay
+pbmc.rna[['lsi']] <- pbmc.atac[['lsi']] # embedding
+pbmc.rna@meta.data <- cbind(pbmc.rna@meta.data, pbmc.atac@meta.data)
+pbmc <- pbmc.rna
+
+# Specify the full path with the filename for the RDS file
+save_path <- "/home/tjq4954/Multiome_PBMC/Data/pbmc.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc, file = save_path)
+```
+
+Quality control
+```{r}
+library(gridExtra)
+setwd("/home/tjq4954/Multiome_PBMC/Data")
+pbmc <- readRDS("pbmc.rds")
+
+# Create some important QC metrics
+DefaultAssay(pbmc) <- "SCT"
+mitochondrial_genes <- rownames(pbmc)[grepl("^MT-", rownames(pbmc))]
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, features = mitochondrial_genes)
+
+DefaultAssay(pbmc) <- "ATAC"
+pbmc <- NucleosomeSignal(pbmc)
+pbmc <- TSSEnrichment(pbmc)
+
+VlnPlot(
+  object = pbmc,
+  features = c("nCount_RNA", "nCount_ATAC","TSS.enrichment","nucleosome_signal","percent.mt"),
+  ncol = 3,
+  pt.size = 0
+)
+
+# filter out low quality cells
+pbmc <- subset(
+  x = pbmc,
+  subset = nCount_ATAC < 100000 &
+    nCount_RNA < 25000 &
+    nCount_ATAC > 1000 &
+    nCount_RNA > 1000 &
+    nucleosome_signal < 2 &
+    TSS.enrichment > 1 &
+    percent.mt < 20
+)
+
+# Remove platelets and erythrocytes
+Idents(pbmc) <- "predicted.celltype.l2"
+pbmc <- subset(pbmc, idents = c("Eryth", "Platelet"), invert = TRUE)
+unique(pbmc$predicted.celltype.l2)
+
+# Create the contingency table
+table(pbmc$group)
+table(pbmc$predicted.celltype.l2, pbmc$group)
+table(pbmc$predicted.celltype.l2, pbmc$orig.ident)
+celltype_ident_table <- table(pbmc$predicted.celltype.l2, pbmc$orig.ident)
+table_df <- as.data.frame.matrix(celltype_ident_table)
+write.csv(table_df, "/home/tjq4954/Multiome_PBMC/Visuals/celltype_ident_table.csv", row.names = TRUE)
+
+# Specify the full path with the filename for the RDS file
+save_path <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_subset.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc, file = save_path)
+```
+
+Peak calling
+```{r}
+# devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
+# library(ArchR)
+# ArchR::installExtraPackages()
+
+setwd("/home/tjq4954/Multiome_PBMC/Data")
+pbmc <- readRDS("pbmc_subset.rds")
+
+peaks <- CallPeaks(pbmc
+                   # ,group.by = "predicted.celltype.l2"
+                  )
+
+# remove peaks on nonstandard chromosomes and in genomic blacklist regions
+peaks <- keepStandardChromosomes(peaks, pruning.mode = "coarse")
+peaks <- subsetByOverlaps(x = peaks, ranges = blacklist_hg38_unified, invert = TRUE)
+
+# quantify counts in each peak
+macs2_counts <- FeatureMatrix(
+  fragments = Fragments(pbmc),
+  features = peaks,
+  cells = colnames(pbmc)
+)
+
+# create a new assay using the MACS2 peak set and add it to the Seurat object
+pbmc[["peaks"]] <- CreateChromatinAssay(
+  counts = macs2_counts,
+  fragments = Fragments(pbmc),
+  annotation = annotations
+)
+
+# Specify the full path with the filename for the RDS file
+save_path <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc, file = save_path)
+```
+
+Peak calling for Case & Control Objects
+```{r}
+# Assuming you have already identified which samples are cases and controls
+control_samples <- c("RNA_280", "RNA_302")
+case_samples <- c("RNA_72", "RNA_203", "RNA_271", "RNA_294")
+
+# Subset pbmc object into case and control groups
+pbmc_control <- subset(pbmc, subset = orig.ident %in% control_samples)
+pbmc_case <- subset(pbmc, subset = orig.ident %in% case_samples)
+
+# call peaks using MACS
+peaks_control <- CallPeaks(pbmc_control
+                           # ,group.by = "predicted.celltype.l2"
+                           )
+peaks_case <- CallPeaks(pbmc_case
+                        # ,group.by = "predicted.celltype.l2"
+                        )
+
+# remove peaks on nonstandard chromosomes and in genomic blacklist regions
+peaks_control <- keepStandardChromosomes(peaks_control, pruning.mode = "coarse")
+peaks_control <- subsetByOverlaps(x = peaks_control, ranges = blacklist_hg38_unified, invert = TRUE)
+peaks_case <- keepStandardChromosomes(peaks_case, pruning.mode = "coarse")
+peaks_case <- subsetByOverlaps(x = peaks_case, ranges = blacklist_hg38_unified, invert = TRUE)
+
+# quantify counts in each peak
+macs2_counts_control <- FeatureMatrix(
+  fragments = Fragments(pbmc_control),
+  features = peaks_control,
+  cells = colnames(pbmc_control)
+)
+macs2_counts_case <- FeatureMatrix(
+  fragments = Fragments(pbmc_case),
+  features = peaks_case,
+  cells = colnames(pbmc_case)
+)
+
+# create a new assay using the MACS2 peak set and add it to the Seurat object
+pbmc_control[["peaks"]] <- CreateChromatinAssay(
+  counts = macs2_counts_control,
+  fragments = Fragments(pbmc_control),
+  annotation = annotations
+)
+pbmc_case[["peaks"]] <- CreateChromatinAssay(
+  counts = macs2_counts_case,
+  fragments = Fragments(pbmc_case),
+  annotation = annotations
+)
+
+# Specify the full path with the filename for the RDS file
+save_path_case <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks_case.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc_case, file = save_path_case)
+
+# Specify the full path with the filename for the RDS file
+save_path_control <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks_control.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc_control, file = save_path_control)
+```
+
+DEG & DA Analysis
+```{r}
+# setwd("/home/tjq4954/Multiome_PBMC/Data")
+# pbmc <- readRDS("pbmc_peaks.rds")
+
+# setwd("/home/tjq4954/Multiome_PBMC/Data")
+# pbmc_control <- readRDS("pbmc_peaks_control.rds")
+# setwd("/home/tjq4954/Multiome_PBMC/Data")
+# pbmc_case <- readRDS("pbmc_peaks_case.rds")
+
+# DefaultAssay(pbmc) <- "RNA" # already performed in the RNA integration script
+# pbmc <- SCTransform(pbmc)
+# pbmc <- RunPCA(pbmc)
+
+DefaultAssay(pbmc) <- "peaks"
+pbmc <- FindTopFeatures(pbmc, min.cutoff = 5)
+pbmc <- RunTFIDF(pbmc)
+pbmc <- RunSVD(pbmc)
+
+DefaultAssay(pbmc_case) <- "peaks"
+pbmc_case <- FindTopFeatures(pbmc_case, min.cutoff = 5)
+pbmc_case <- RunTFIDF(pbmc_case)
+pbmc_case <- RunSVD(pbmc_case)
+
+DefaultAssay(pbmc_control) <- "peaks"
+pbmc_control <- FindTopFeatures(pbmc_control, min.cutoff = 5)
+pbmc_control <- RunTFIDF(pbmc_control)
+pbmc_control <- RunSVD(pbmc_control)
+
+```
+
+Joint UMAP Visualization
+```{r}
+library(ggplot2)
+
+# set a reasonable order for cell types to be displayed when plotting
+# levels(pbmc) <- c("CD4 Naive", "CD4 TCM", "CD4 CTL", "CD4 TEM", "CD4 Proliferating",
+#                   "CD8 Naive", "dnT",
+#                  "CD8 TEM", "CD8 TCM", "CD8 Proliferating", "MAIT", "NK", "NK_CD56bright",
+#                  "NK Proliferating", "gdT",
+#                  "Treg", "B naive", "B intermediate", "B memory", "Plasmablast",
+#                  "CD14 Mono", "CD16 Mono",
+#                  "cDC1", "cDC2", "pDC", "HSPC", "Eryth", "ASDC", "ILC", "Platelet")
+
+# build a joint neighbor graph using both assays
+pbmc <- FindMultiModalNeighbors(
+  object = pbmc,
+  reduction.list = list("pca", "lsi"), 
+  dims.list = list(1:50, 2:40),
+  modality.weight.name = "RNA.weight",
+  verbose = TRUE
+)
+
+# build a joint UMAP visualization
+pbmc <- RunUMAP(
+  object = pbmc,
+  nn.name = "weighted.nn",
+  assay = "RNA",
+  verbose = TRUE
+)
+
+DefaultAssay(pbmc) <- "SCT"
+DimPlot(pbmc, label = TRUE, repel = TRUE, reduction = "umap", group.by = "predicted.celltype.l2") + NoLegend()
+
+# WNN UMAP - Cell Type
+plot1 <- DimPlot(pbmc, label = TRUE, repel = TRUE, reduction = "umap", group.by = "predicted.celltype.l2") + NoLegend() + labs(title = "Joint UMAP")
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/JointUMAP_CellType.png", plot = plot1, width = 10, height = 8, dpi = 600)
+# WNN UMAP - Sample ID
+plot2 <- DimPlot(pbmc, label = TRUE, repel = TRUE, reduction = "umap", group.by = "orig.ident") + NoLegend()
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/JointUMAP_SampleID.png", plot = plot2, width = 10, height = 8, dpi = 600)
+```
+
+Coverage Plot
+```{r}
+# Research Idea #1: PSMB8-AS1 induced PSMB9 transcription by recruiting the transcription factor NONO (non-POU domain-containing octamer-binding protein) and binding to the PSMB9 promoter. PSMB9 (proteasome subunit-β type-9) elevated VCAM1 and ICAM1 expression via the upregulation of ZEB1 (zinc finger E-box-binding homeobox 1).
+# Research Idea #2: An interesting finding at first glance is the 4-5-log2 fold change elevation in cases (4 with CAD) versus controls (3 closely matched without CAD) in monocyte expression of c17orf99, which is IL-40, implicated in B cell activation and some inflammatory conditions.
+# first compute the GC content for each peak
+pbmc <- RegionStats(pbmc, genome = BSgenome.Hsapiens.UCSC.hg38)
+pbmc_control <- RegionStats(pbmc_control, genome = BSgenome.Hsapiens.UCSC.hg38)
+pbmc_case <- RegionStats(pbmc_case, genome = BSgenome.Hsapiens.UCSC.hg38)
+
+# link peaks to genes
+pbmc_control <- LinkPeaks(
+  object = pbmc_control,
+  peak.assay = "peaks",
+  expression.assay = "SCT",
+  genes.use = c("C17orf99", "HIF1A", "IL1B", "IL10"),
+  pvalue_cutoff = 0.2,
+  score_cutoff = 0.2
+)
+
+pbmc_case <- LinkPeaks(
+  object = pbmc_case,
+  peak.assay = "peaks",
+  expression.assay = "SCT",
+  genes.use = c("C17orf99", "HIF1A", "IL1B", "IL10"),
+  pvalue_cutoff = 0.2,
+  score_cutoff = 0.2,
+)
+
+Links(pbmc_control)
+Links(pbmc_case)
+
+Idents(pbmc) <- "predicted.celltype.l2"
+
+# Look up genes to plot
+grep("C17orf99", rownames(pbmc@assays$SCT), value = TRUE)
+
+p1 <- CoveragePlot(
+  object = pbmc,
+  region = "PSMB9",
+  features = "PSMB9",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l2",
+  idents = c("CD16 Mono","CD14 Mono")
+)
+
+p2 <- CoveragePlot(
+  object = pbmc,
+  region = "C17orf99",
+  features = "C17orf99",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l2",
+  idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 5000
+)
+
+p3 <- CoveragePlot(
+  object = pbmc,
+  region = "IL1B",
+  features = "IL1B",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l2",
+  idents = c("CD16 Mono","CD14 Mono")
+)
+
+p4 <- CoveragePlot(
+  object = pbmc,
+  region = "LYZ",
+  features = "LYZ",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l2",
+  idents = c("CD16 Mono","CD14 Mono")
+  # , extend.upstream = 5000,
+  # extend.downstream = 5000
+)
+
+patchwork::wrap_plots(p1,p2, ncol = 1)
+patchwork::wrap_plots(p3,p4, ncol = 1)
+
+# testing atac signal validity by looking at individual samples
+pbmc_CD16_Mono <- subset(pbmc, subset = predicted.celltype.l2 == "CD16 Mono")
+pbmc_CD14_Mono <- subset(pbmc, subset = predicted.celltype.l2 == "CD14 Mono")
+
+CoveragePlot(
+  object = pbmc_CD16_Mono,
+  region = "IL1B",
+  features = "IL1B",
+  expression.assay = "SCT",
+  group.by = "orig.ident"
+)
+
+CoveragePlot(
+  object = pbmc_CD14_Mono,
+  region = "IL1B",
+  features = "IL1B",
+  expression.assay = "SCT",
+  group.by = "orig.ident"
+)
+
+```
+
+Cases vs. Controls for IL1B, CCL4, MIF, HIF1A
+```{r}
+# Look up genes to plot
+grep("C17orf99", rownames(pbmc@assays$SCT), value = TRUE)
+# "PSMB8-AS1", "PSMB8", "PSMB9", "APOE", "VCAM1", "ICAM1", "ZEB1", "IL1B", "IL10"
+
+# Coverage plots for case group
+p1_case <- CoveragePlot(
+  object = pbmc_case,
+  region = "PSMB9",
+  features = "PSMB9",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.upstream = 5000,
+  extend.downstream = 5000,
+  links = FALSE
+)
+
+p2_case <- CoveragePlot(
+  object = pbmc_case,
+  region = "C17orf99",
+  features = "C17orf99",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 5000,
+  links = FALSE
+)
+
+p3_case <- CoveragePlot(
+  object = pbmc_case,
+  region = "IL1B",
+  features = "IL1B",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  idents = c("Mono","DC"),
+  links = FALSE
+)
+
+p4_case <- CoveragePlot(
+  object = pbmc_case,
+  region = "IL10",
+  features = "IL10",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 8000,
+  links = FALSE
+)
+
+p5_case <- CoveragePlot(
+  object = pbmc_case,
+  region = "HIF1A",
+  features = "HIF1A",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 8000,
+  links = FALSE
+)
+
+p6_case <- CoveragePlot(
+  object = pbmc_case,
+  region = "LYZ",
+  features = "LYZ",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.upstream = 5000,
+  extend.downstream = 5000,
+  links = FALSE
+)
+
+# Coverage plots for control group
+p1_control <- CoveragePlot(
+  object = pbmc_control,
+  region = "PSMB9",
+  features = "PSMB9",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.upstream = 5000,
+  extend.downstream = 5000,
+  links = FALSE
+)
+
+p2_control <- CoveragePlot(
+  object = pbmc_control,
+  region = "C17orf99",
+  features = "C17orf99",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 5000,
+  links = FALSE
+)
+
+p3_control <- CoveragePlot(
+  object = pbmc_control,
+  region = "IL1B",
+  features = "IL1B",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  idents = c("Mono","DC"),
+  links = FALSE
+)
+
+p4_control <- CoveragePlot(
+  object = pbmc_control,
+  region = "IL10",
+  features = "IL10",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 8000,
+  links = FALSE
+)
+
+p5_control <- CoveragePlot(
+  object = pbmc_control,
+  region = "HIF1A",
+  features = "HIF1A",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.downstream = 8000,
+  links = FALSE
+)
+
+p6_control <- CoveragePlot(
+  object = pbmc_control,
+  region = "LYZ",
+  features = "LYZ",
+  expression.assay = "SCT",
+  group.by = "predicted.celltype.l1",
+  # idents = c("CD16 Mono","CD14 Mono"),
+  extend.upstream = 5000,
+  extend.downstream = 5000,
+  links = FALSE
+)
+
+# Add titles to case and control coverage plots
+library(patchwork)
+p1_case <- p1_case + plot_annotation(title = "PSMB9 - Case (Top) v.s. Control (Bottom)")
+p2_case <- p2_case + plot_annotation(title = "C17orf99 (IL40) - Case (Top) v.s. Control (Bottom)")
+p3_case <- p3_case + plot_annotation(title = "IL1B - Case (Top) v.s. Control (Bottom)")
+p4_case <- p4_case + plot_annotation(title = "IL10 - Case (Top) v.s. Control (Bottom)")
+p5_case <- p5_case + plot_annotation(title = "HIF1A - Case (Top) v.s. Control (Bottom)")
+p6_case <- p6_case + plot_annotation(title = "LYZ - Case (Top) v.s. Control (Bottom)")
+
+# Combine case and control plots for each gene
+combined_p1 <- p1_case + p1_control + plot_layout(ncol = 1)
+combined_p2 <- p2_case + p2_control + plot_layout(ncol = 1)
+combined_p3 <- p3_case + p3_control + plot_layout(ncol = 1)
+combined_p4 <- p4_case + p4_control + plot_layout(ncol = 1)
+combined_p5 <- p5_case + p5_control + plot_layout(ncol = 1)
+combined_p6 <- p6_case + p6_control + plot_layout(ncol = 1)
+
+# Save the combined plots
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_PSBM9.png", plot = combined_p1, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_IL40.png", plot = combined_p2, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_IL1B.png", plot = combined_p3, width = 7, height = 8, dpi = 600)
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_IL10.png", plot = combined_p4, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_HIF1A.png", plot = combined_p5, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_LYZ.png", plot = combined_p6, width = 9, height = 15, dpi = 600)
+
+# table(pbmc$orig.ident)
+```
+
+Coverage Plot with Peak Links
+```{r}
+# Customized Coverage Plot for HIF1A (Case)
+cov_plot_case <- CoveragePlot(object = pbmc_case, region = "chr14-61490000-61770000", annotation = F, peaks = F, links =F)
+gene_plot_case <- AnnotationPlot(object = pbmc_case, region = "chr14-61490000-61770000")
+peak_plot_case <- PeakPlot(object = pbmc_case, region = "chr14-61490000-61770000")
+link_plot_case <- LinkPlot(object=pbmc_case, region = "chr14-61490000-61770000")
+expr_plot_case <- ExpressionPlot(object = pbmc_case, features = "HIF1A", assay = "SCT")
+HIF1A_case <- CombineTracks(
+  plotlist = list(cov_plot_case, peak_plot_case, gene_plot_case, link_plot_case),
+  expression.plot = expr_plot_case,
+  heights = c(10, 1, 2, 3),
+  widths = c(10, 1)
+)
+HIF1A_case <- HIF1A_case + plot_annotation(title = "HIF1A Coverage Plot with Peak Links - Case")
+
+# Customized Coverage Plot for HIF1A (Control)
+cov_plot_control <- CoveragePlot(object = pbmc_control, region = "chr14-61490000-61770000", annotation = F, peaks = F, links =F)
+gene_plot_control <- AnnotationPlot(object = pbmc_control, region = "chr14-61490000-61770000")
+peak_plot_control <- PeakPlot(object = pbmc_control, region = "chr14-61490000-61770000")
+link_plot_control <- LinkPlot(object=pbmc_control, region = "chr14-61490000-61770000")
+expr_plot_control <- ExpressionPlot(object = pbmc_control, features = "HIF1A", assay = "SCT")
+HIF1A_control <- CombineTracks(
+  plotlist = list(cov_plot_control, peak_plot_control, gene_plot_control, link_plot_control),
+  expression.plot = expr_plot_control,
+  heights = c(10, 1, 2, 3),
+  widths = c(10, 1)
+)
+HIF1A_control <- HIF1A_control + plot_annotation(title = "HIF1A Coverage Plot with Peak Links - Control")
+
+# Save the combined plots
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_HIF1A_CaseLinks.png", plot = HIF1A_case, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_HIF1A_ControlLinks.png", plot = HIF1A_control, width = 9, height = 15, dpi = 600)
+```
+
+Volcano Plot for monocytes -- to search for interesting genes worth running coverage plots
+```{r}
+# BiocManager::install('EnhancedVolcano')
+library(EnhancedVolcano)
+
+DefaultAssay(pbmc) <- "SCT"
+Idents(pbmc) <- "predicted.celltype.l2"
+
+# Remove any cells with HBA1 expression
+hba1_expression <- pbmc@assays$SCT$data[rownames(pbmc@assays$SCT$data)[16243], ]
+pbmc$HBA1_Positive <- ifelse(hba1_expression > 0, "Pos", "Neg")
+table(pbmc$HBA1_Positive, pbmc$predicted.celltype.l2)
+pbmc <- subset(pbmc, subset = HBA1_Positive == "Neg")
+
+# Exclude "RNA_161" from the dataset
+# pbmc <- subset(pbmc, subset = orig.ident != "RNA_161") # leave out the bad sample
+# unique(pbmc$orig.ident) # check the remaining samples
+
+# Only include the monocyte population
+Idents(pbmc) <- "predicted.celltype.l1"
+pbmc_subset <- subset(pbmc, idents = c("Mono"))
+pbmc_subset <- PrepSCTFindMarkers(pbmc_subset)
+Idents(pbmc_subset) <- "group"
+table(pbmc_subset$group, pbmc_subset$orig.ident)
+
+markers <- FindMarkers(
+  object = pbmc_subset,
+  ident.1 = "case",
+  ident.2 = "control",
+  min.pct = 0.01,
+  assay = "SCT"
+)
+
+A <- EnhancedVolcano(markers,
+                rownames(markers),
+                x ="avg_log2FC", 
+                y ="p_val_adj",
+                title = "Volcano plot of Case (R) v. Control (L) Monocytes",
+                xlim = c(-5,5))
+
+AA <- EnhancedVolcano(markers,
+                rownames(markers),
+                x ="avg_log2FC", 
+                y ="p_val_adj",
+                title = "Volcano plot of Case (R) v. Control (L) Monocytes",
+                lab=NA,
+                xlim = c(-5,5))
+
+# Define file path and name for the saved plot
+output_file_A <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_Monocytes.png"
+output_file_AA <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_Monocytes_NoLabels.png"
+
+# Save the plot
+ggsave(filename = output_file_A, plot = A, width = 10, height = 8, dpi = 600)
+ggsave(filename = output_file_AA, plot = AA, width = 10, height = 8, dpi = 600)
+```
+
+Volcano Plot for CD16 & CD14 monocytes -- to search for interesting genes worth running coverage plots
+```{r}
+# Now, add additional volcano plots tailored for cd16 & cd14 monocytes
+Idents(pbmc) <- "predicted.celltype.l2"
+pbmc_cd16 <- subset(pbmc, idents = c("CD16 Mono"))
+pbmc_cd14 <- subset(pbmc, idents = c("CD14 Mono"))
+
+pbmc_cd16 <- PrepSCTFindMarkers(pbmc_cd16)
+pbmc_cd14 <- PrepSCTFindMarkers(pbmc_cd14)
+Idents(pbmc_cd16) <- "group"
+Idents(pbmc_cd14) <- "group"
+
+table(pbmc_cd16$group)
+table(pbmc_cd14$group)
+table(pbmc_cd16$group, pbmc_cd16$orig.ident)
+table(pbmc_cd14$group, pbmc_cd14$orig.ident)
+
+markers_cd16 <- FindMarkers(
+  object = pbmc_cd16,
+  ident.1 = "case",
+  ident.2 = "control",
+  min.pct = 0.01,
+  assay = "SCT"
+)
+markers_cd14 <- FindMarkers(
+  object = pbmc_cd14,
+  ident.1 = "case",
+  ident.2 = "control",
+  min.pct = 0.01,
+  assay = "SCT"
+)
+
+library(dplyr)
+markers_cd14 %>%
+  top_n(-50, avg_log2FC)
+
+B <- EnhancedVolcano(markers_cd16,
+                rownames(markers_cd16),
+                x ="avg_log2FC", 
+                y ="p_val_adj",
+                title = "Volcano plot of Case (R) v. Control (L) CD16 Monocytes",
+                xlim = c(-5,5))
+
+BB <- EnhancedVolcano(markers_cd16,
+                rownames(markers_cd16),
+                x ="avg_log2FC", 
+                y ="p_val_adj",
+                title = "Volcano plot of Case (R) v. Control (L) CD16 Monocytes",
+                lab=NA,
+                xlim = c(-5,5))
+
+C <- EnhancedVolcano(markers_cd14,
+                rownames(markers_cd14),
+                x ="avg_log2FC", 
+                y ="p_val_adj",
+                title = "Volcano plot of Case (R) v. Control (L) CD14 Monocytes",
+                xlim = c(-5,5))
+
+CC <- EnhancedVolcano(markers_cd14,
+                rownames(markers_cd14),
+                x ="avg_log2FC", 
+                y ="p_val_adj",
+                title = "Volcano plot of Case (R) v. Control (L) CD14 Monocytes",
+                lab=NA,
+                xlim = c(-5,5))
+
+# Save the plot
+output_file_B <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD16Monocytes.png"
+ggsave(filename = output_file_B, plot = B, width = 10, height = 8, dpi = 600)
+output_file_BB <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD16Monocytes_NoLabels.png"
+ggsave(filename = output_file_BB, plot = BB, width = 10, height = 8, dpi = 600)
+
+output_file_C <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD14Monocytes.png"
+ggsave(filename = output_file_C, plot = C, width = 10, height = 8, dpi = 600)
+output_file_CC <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD14Monocytes_NoLabels.png"
+ggsave(filename = output_file_CC, plot = CC, width = 10, height = 8, dpi = 600)
+
+```
+
+Violin Plot
+```{r}
+DefaultAssay(pbmc_case) <- "SCT"
+DefaultAssay(pbmc_control) <- "SCT"
+
+# Remove any cells with HBA1 expression
+hba1_expression <- pbmc_case@assays$SCT$data[rownames(pbmc_case@assays$SCT$data)[16243], ]
+pbmc_case$HBA1_Positive <- ifelse(hba1_expression > 0, "Pos", "Neg")
+table(pbmc_case$HBA1_Positive, pbmc_case$predicted.celltype.l2)
+pbmc_case <- subset(pbmc_case, subset = HBA1_Positive == "Neg")
+
+hba1_expression <- pbmc_control@assays$SCT$data[rownames(pbmc_control@assays$SCT$data)[16243], ]
+pbmc_control$HBA1_Positive <- ifelse(hba1_expression > 0, "Pos", "Neg")
+table(pbmc_control$HBA1_Positive, pbmc_control$predicted.celltype.l2)
+pbmc_control <- subset(pbmc_control, subset = HBA1_Positive == "Neg")
+
+# Testing
+VlnPlot(pbmc_case, features = "HBA1",
+        group.by = "predicted.celltype.l2",
+        idents = c("CD16 Mono", "CD14 Mono"),
+        pt.size = 0.2, ncol = 4)
+VlnPlot(pbmc_control, features = "HBA1",
+        group.by = "predicted.celltype.l2",
+        idents = c("CD16 Mono", "CD14 Mono"),
+        pt.size = 0.2, ncol = 4)
+
+# Create violin plots for selected genes in the case and control groups
+genes_of_interest <- c("PSMB8-AS1", "PSMB9", "ICAM1", "VCAM1", "IL1B", "HIF1A")
+DefaultAssay(pbmc_case) <- "SCT"
+DefaultAssay(pbmc_control) <- "SCT"
+
+# Generate violin plots for the case group
+violin_case <- VlnPlot(
+  object = pbmc_case,
+  features = genes_of_interest,
+  pt.size = 0,
+  ncol = 3,
+  group.by = "predicted.celltype.l1",
+  slot = 'data')
+
+# Generate violin plots for the control group
+violin_control <- VlnPlot(
+  object = pbmc_control,
+  features = genes_of_interest,
+  pt.size = 0,
+  ncol = 3,
+  group.by = "predicted.celltype.l1",
+  slot = 'data')
+
+# Print violin plots
+violin_case
+violin_control
+
+# Save the plots if needed
+setwd("/home/tjq4954/Multiome_PBMC/Visuals")
+ggsave("violin_case_plots.png", plot = violin_case, width = 15, height = 10, dpi = 600)
+ggsave("violin_control_plots.png", plot = violin_control, width = 15, height = 10, dpi = 600)
+
+```
+
+```{r}
+sessionInfo()
+```

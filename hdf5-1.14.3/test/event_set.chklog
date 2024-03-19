@@ -1,0 +1,10 @@
+============================
+Test log for event_set 
+============================
+Testing event set creation                                             PASSED
+Testing event set H5ES_NONE                                            PASSED
+Testing event set get requests                                         PASSED
+All event set tests passed.
+
+Finished testing event_set 
+============================

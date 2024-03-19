@@ -1,0 +1,43 @@
+============================
+Test log for set_extent 
+============================
+Testing with old file format and chunk cache disabled:
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_DEFAULT   PASSED
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_ON        PASSED
+Testing with old file format and chunk cache enabled:
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_DEFAULT   PASSED
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_ON        PASSED
+Testing external file use                                             
+  With H5D_SELECTION_IO_MODE_DEFAULT     PASSED
+Testing external file use                                             
+  With H5D_SELECTION_IO_MODE_ON          PASSED
+Testing storage layout use - tested with all low/high library format bounds
+  With H5D_SELECTION_IO_MODE_DEFAULT     PASSED
+Testing storage layout use - tested with all low/high library format bounds
+  With H5D_SELECTION_IO_MODE_ON          PASSED
+Testing with new file format and chunk cache disabled:
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_DEFAULT   PASSED
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_ON        PASSED
+Testing with new file format and chunk cache enabled:
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_DEFAULT   PASSED
+  Testing datasets with ranks 1 to 4 (all configurations)             
+    With H5D_SELECTION_IO_MODE_ON        PASSED
+Testing external file use                                             
+  With H5D_SELECTION_IO_MODE_DEFAULT     PASSED
+Testing external file use                                             
+  With H5D_SELECTION_IO_MODE_ON          PASSED
+Testing storage layout use - tested with all low/high library format bounds
+  With H5D_SELECTION_IO_MODE_DEFAULT     PASSED
+Testing storage layout use - tested with all low/high library format bounds
+  With H5D_SELECTION_IO_MODE_ON          PASSED
+All H5Dset_extent tests passed.
+
+Finished testing set_extent 
+============================

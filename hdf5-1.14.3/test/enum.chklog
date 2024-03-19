@@ -1,0 +1,14 @@
+============================
+Test log for enum 
+============================
+Testing named enumeration types                                        PASSED
+Testing enumeration conversions                                        PASSED
+Testing O(1) conversions                                               PASSED
+Testing O(log N) conversions                                           PASSED
+Testing for non-existing name and value                                PASSED
+Testing setters and getters with enumeration types                     PASSED
+Testing copying empty enums works                                      PASSED
+All enum tests passed.
+
+Finished testing enum 
+============================

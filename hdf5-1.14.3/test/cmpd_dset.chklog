@@ -1,0 +1,238 @@
+============================
+Test log for cmpd_dset 
+============================
+Testing compound dataset for selection I/O cases----
+  With default chunk cache, not set fill value, selection I/O OFF, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O OFF, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O OFF, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O OFF, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O ON, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O ON, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O ON, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, not set fill value, selection I/O ON, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O OFF, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O OFF, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O OFF, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O OFF, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O ON, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O ON, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O ON, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With default chunk cache, set fill value, selection I/O ON, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O OFF, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O OFF, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O OFF, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O OFF, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O ON, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O ON, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O ON, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, not set fill value, selection I/O ON, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O OFF, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O OFF, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O OFF, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O OFF, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O ON, without modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O ON, without modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O ON, with modify write buf, without H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+  With chunk cache set 0, set fill value, selection I/O ON, with modify write buf, with H5Pset_buffer:
+    test_select_compound(): basic compound write PASSED
+    test_select_compound(): reversal of struct members PASSED
+    test_select_compound(): verify fix for non-optimized compound conversions with memory type larger than file  PASSED
+    test_select_src_subset(): writing data to contiguous and chunked datasets PASSED
+    test_select_dst_subset(): writing data to contiguous and chunked datasets PASSED
+Testing compound dataset:
+Testing basic compound write                                           PASSED
+Testing basic compound read                                            PASSED
+Testing reversal of struct members                                     PASSED
+Testing subset struct read                                             PASSED
+Testing partially initialized superset read                            PASSED
+Testing partially initialized superset optimized read                  PASSED
+Testing partially initialized superset write                           PASSED
+Testing explicit data space                                            PASSED
+Testing hyperslab partial read to array                                PASSED
+Testing hyperslab partial read to another hyperslab                    PASSED
+Testing hyperslab to hyperslab part initialized read                   PASSED
+Testing hyperslab part initialized write                               PASSED
+Testing the optimization of when the source type is a subset of the dest:
+Testing writing data to contiguous and chunked datasets                PASSED
+Testing rewriting data with a subset of original data type             PASSED
+Testing reading data with a subset of original data type               PASSED
+Testing the optimization of when the dest type is a subset of the source:
+Testing writing data to contiguous and chunked datasets                PASSED
+Testing rewriting data with a subset of original data type             PASSED
+Testing reading data with a subset of original data type               PASSED
+Testing that compound types can be packed out of order:
+Without extra space at the end of compound...
+Testing random member insertion with empty compound subtype            PASSED
+Testing random member insertion with full compound subtype             PASSED
+Testing reverse member insertion with empty compound subtype           PASSED
+Testing reverse member insertion with full compound subtype            PASSED
+Testing forward member insertion with empty compound subtype           PASSED
+Testing forward member insertion with full compound subtype            PASSED
+With extra space at the end of compound...
+Testing random member insertion with empty compound subtype            PASSED
+Testing random member insertion with full compound subtype             PASSED
+Testing reverse member insertion with empty compound subtype           PASSED
+Testing reverse member insertion with full compound subtype            PASSED
+Testing forward member insertion with empty compound subtype           PASSED
+Testing forward member insertion with full compound subtype            PASSED
+Testing compound member ordering:
+Testing that compound member insertion order is preserved              PASSED
+All compound dataset tests passed.
+
+Finished testing cmpd_dset 
+============================

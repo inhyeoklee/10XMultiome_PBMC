@@ -1,0 +1,31 @@
+============================
+Test log for onion 
+============================
+Testing Onion VFD functionality.
+Testing archival index                                                 PASSED
+Testing revision index                                                 PASSED
+Testing revision index collisions                                      PASSED
+Testing revision index resizing                                        PASSED
+Testing revision index to archival index                               PASSED
+Testing file access property list                                      PASSED
+Testing encode/decode history header                                   PASSED
+Testing encode/decode history (empty and failures)                     PASSED
+Testing encode/decode history                                          PASSED
+Testing encode/decode revision record                                  PASSED
+Testing onion creation; no extant canonical; no initial data           PASSED
+Testing onion creation; truncate extant canonical; no initial data     PASSED
+Testing onion creation; no extant canonical; w/ initial data           PASSED
+Testing onion creation; truncate extant canonical; w/ initial data     PASSED
+Testing multiple revisions with gaps and overlap                       PASSED
+Testing page-aligned history on onion-created file                     PASSED
+Testing onion-created two dimensional HDF5 file with revisions         PASSED
+Testing onion-created one-dimensional HDF5 file with revisions         PASSED
+Testing onion-created HDF5 file with revisions testing addition and deletion of objects PASSED
+Testing onion-created HDF5 file with revisions testing dataset extension PASSED
+Testing onion-created HDF5 file with revisions testing H5FDctl         PASSED
+Testing onion-created HDF5 file with revisions testing references      PASSED
+Testing H5Pset_driver_by_name                                          PASSED
+All Onion tests passed.
+
+Finished testing onion 
+============================

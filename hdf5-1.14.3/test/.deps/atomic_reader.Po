@@ -1,0 +1,103 @@
+atomic_reader.o: atomic_reader.c \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/assert.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/features.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/cdefs.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/wordsize.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/gnu/stubs.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/gnu/stubs-64.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/stdio.h \
+ /home/tjq4954/.conda/envs/inhyeok/lib/gcc/x86_64-conda-linux-gnu/13.2.0/include/stddef.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/types.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/typesizes.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/libio.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/_G_config.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/wchar.h \
+ /home/tjq4954/.conda/envs/inhyeok/lib/gcc/x86_64-conda-linux-gnu/13.2.0/include/stdarg.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdio_lim.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/sys_errlist.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdio.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdio2.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/stdlib.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/waitflags.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/waitstatus.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/endian.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/endian.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/byteswap.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/xlocale.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/types.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/time.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/select.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/select.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/sigset.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/time.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/sysmacros.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/pthreadtypes.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/alloca.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdlib.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/string.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/string.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/string2.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/string3.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/fcntl.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/fcntl.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/uio.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stat.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/fcntl2.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/unistd.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/posix_opt.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/environments.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/confname.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/getopt.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/unistd.h \
+ /home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/stat.h
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/assert.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/features.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/cdefs.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/wordsize.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/gnu/stubs.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/gnu/stubs-64.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/stdio.h:
+/home/tjq4954/.conda/envs/inhyeok/lib/gcc/x86_64-conda-linux-gnu/13.2.0/include/stddef.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/types.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/typesizes.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/libio.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/_G_config.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/wchar.h:
+/home/tjq4954/.conda/envs/inhyeok/lib/gcc/x86_64-conda-linux-gnu/13.2.0/include/stdarg.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdio_lim.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/sys_errlist.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdio.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdio2.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/stdlib.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/waitflags.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/waitstatus.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/endian.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/endian.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/byteswap.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/xlocale.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/types.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/time.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/select.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/select.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/sigset.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/time.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/sysmacros.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/pthreadtypes.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/alloca.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stdlib.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/string.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/string.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/string2.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/string3.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/fcntl.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/fcntl.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/uio.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/stat.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/fcntl2.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/unistd.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/posix_opt.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/environments.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/confname.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/getopt.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/bits/unistd.h:
+/home/tjq4954/.conda/envs/inhyeok/x86_64-conda-linux-gnu/sysroot/usr/include/sys/stat.h:

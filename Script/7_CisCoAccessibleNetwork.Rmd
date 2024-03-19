@@ -1,0 +1,21 @@
+---
+title: "CisCoAccessibleNetwork"
+output: html_document
+date: "2024-02-27"
+---
+
+```{r}
+# Assume Cicero is already installed and loaded
+# Convert Seurat objects to Cicero CDS (Common Data Structures)
+# Note: This step requires a pre-processed Seurat object with count matrices
+
+# Placeholder for conversion, as direct Signac to Cicero conversion is not documented
+# pbmc_case_cds <- ConvertToCiceroCDS(pbmc_case)
+# pbmc_control_cds <- ConvertToCiceroCDS(pbmc_control)
+
+# Once converted, you can run Cicero for co-accessibility analysis
+# coaccess_case <- runCicero(pbmc_case_cds, ...)
+# coaccess_control <- runCicero(pbmc_control_cds, ...)
+
+# For visualization and further analysis, follow Cicero documentation
+```

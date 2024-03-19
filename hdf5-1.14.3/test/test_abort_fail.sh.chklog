@@ -1,0 +1,11 @@
+============================
+test_abort_fail.sh  Test Log
+============================
+Testing file not closed assertion/abort failure
+Test PASSED
+Testing infinite loop closing library/abort failure
+Test PASSED
+All tests for abort failure passed.
+
+Finished testing test_abort_fail.sh 
+============================

@@ -1,0 +1,18 @@
+============================
+Test log for ttsafe 
+============================
+Most thread-safety tests skipped because THREADSAFE not enabled
+
+For help use: /home/tjq4954/Multiome_PBMC/hdf5-1.14.3/test/.libs/lt-ttsafe -help
+Linked with hdf5 version 1.14 release 3
+Testing  -- library threadsafe status (is_threadsafe) 
+
+
+All tests were successful. 
+
+
+Cleaning Up temp files...
+
+
+Finished testing ttsafe 
+============================

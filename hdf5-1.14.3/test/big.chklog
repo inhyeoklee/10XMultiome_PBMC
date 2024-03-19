@@ -1,0 +1,59 @@
+============================
+Test log for big 
+============================
+Testing big file with the SEC2 Driver 
+Testing Huge dataset write                                             PASSED
+#000 0x00000001679d8a52                                                PASSED
+#001 0x0000000150bdbcdd                                                PASSED
+#002 0x00000000589a2002                                                PASSED
+#003 0x00000000c9be389b                                                PASSED
+#004 0x00000000da049270                                                PASSED
+#005 0x0000000007330260                                                PASSED
+#006 0x00000000119c4050                                                PASSED
+#007 0x0000000011184ba8                                                PASSED
+#008 0x00000000c9b1c06c                                                PASSED
+#009 0x0000000197cc75a6                                                PASSED
+#010 0x00000000ebac3474                                                PASSED
+#011 0x00000001bd735dc4                                                PASSED
+#012 0x000000008941ed58                                                PASSED
+#013 0x00000000fa4247ec                                                PASSED
+#014 0x00000001691a3335                                                PASSED
+#015 0x0000000152808364                                                PASSED
+#016 0x00000001189c85c0                                                PASSED
+#017 0x00000001e51ecdfb                                                PASSED
+#018 0x0000000020db92a8                                                PASSED
+#019 0x000000005595a000                                                PASSED
+#020 0x000000001dcee600                                                PASSED
+#021 0x0000000041783430                                                PASSED
+#022 0x00000000fda9cae1                                                PASSED
+#023 0x0000000009e0b9d0                                                PASSED
+#024 0x00000000e25f963d                                                PASSED
+#025 0x0000000023174340                                                PASSED
+#026 0x00000001be3b22d5                                                PASSED
+#027 0x00000000937b93a0                                                PASSED
+#028 0x00000000030a0a52                                                PASSED
+#029 0x00000001dfba335a                                                PASSED
+#030 0x0000000009afb7f9                                                PASSED
+#031 0x000000001ccd88b8                                                PASSED
+#032 0x00000001bb85d5eb                                                PASSED
+#033 0x0000000076470db8                                                PASSED
+#034 0x00000000e30516bd                                                PASSED
+#035 0x000000012a203eb2                                                PASSED
+#036 0x00000000abf4fe74                                                PASSED
+#037 0x000000019fc61400                                                PASSED
+#038 0x00000001c7d57f33                                                PASSED
+#039 0x000000007c684f88                                                PASSED
+#040 0x0000000154661480                                                PASSED
+#041 0x000000002f01c9a5                                                PASSED
+#042 0x000000005c2abe80                                                PASSED
+#043 0x00000001046ede6c                                                PASSED
+#044 0x000000011ee3bfd8                                                PASSED
+#045 0x00000001b6c86eb5                                                PASSED
+#046 0x0000000094242fb6                                                PASSED
+#047 0x00000000225582be                                                PASSED
+#048 0x0000000090ca33d7                                                PASSED
+#049 0x00000000f1b72938                                                PASSED
+Test passed with the SEC2 Driver.
+
+Finished testing big 
+============================

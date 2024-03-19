@@ -1,0 +1,87 @@
+============================
+testh5copy.sh  Test Log
+============================
+Testing ../../src/h5copy/h5copy -h                                     PASSED
+Testing ../../src/h5copy/h5copy --help                                 PASSED
+Test copying various forms of datasets
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/simple. PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/simple.out.h5 simple  PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/chunk.o PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/chunk.out.h5 chunk ch PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/compact PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/compact.out.h5 compac PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/compoun PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/compound.out.h5 compo PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/compres PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/compressed.out.h5 com PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/named_v PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/named_vl.out.h5 named PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/nested_ PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/nested_vl.out.h5 nest PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/dset_at PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/dset_attr.out.h5 /dse PASSED
+Test copying dataset within group in source file to root of destination
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/simple_ PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/simple_top.out.h5 grp PASSED
+Test copying & renaming dataset
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/dsrenam PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/dsrename.out.h5 compo PASSED
+Test copying empty, 'full' & 'nested' groups
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_emp PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/grp_empty.out.h5 grp_ PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_dse PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/grp_dsets.out.h5 grp_ PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_nes PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/grp_nested.out.h5 grp PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_att PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/grp_attr.out.h5 grp_a PASSED
+Test copying dataset within group in source file to group in destination
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/simple_Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/simple_ PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/simple_group.out.h5 / PASSED
+Test copying & renaming group
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_ren PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/grp_rename.out.h5 grp PASSED
+Test copying 'full' group hierarchy into group in destination file
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_dseTesting ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/grp_dse PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/grp_dsets_rename.out. PASSED
+Test copying objects into group hier. that doesn't exist yet in destination file
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/A_B1_si PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/A_B1_simple.out.h5 si PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/A_B2_si PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/A_B2_simple2.out.h5 s PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/C_D_sim PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/C_D_simple.out.h5 /gr PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/E_F_grp PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/E_F_grp_dsets.out.h5  PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/G_H_grp PASSED
+Verifying h5diff output ./tmp/h5copytst.h5 ./tmp/G_H_grp_nested.out.h5 PASSED
+Test copying object and region references
+Testing ../../src/h5copy/h5copy -f ref -i ./tmp/h5copy_ref.h5 -o ./tmp PASSED
+Test copying external link directly without -f ext
+Testing ../../src/h5copy/h5copy -v -i ./tmp/h5copy_extlinks_src.h5 -o  PASSED
+Test copying external link directly with -f ext
+Testing ../../src/h5copy/h5copy -f ext -i ./tmp/h5copy_extlinks_src.h5 PASSED
+Test copying dangling external link (no obj) directly without -f ext
+Testing ../../src/h5copy/h5copy -v -i ./tmp/h5copy_extlinks_src.h5 -o  PASSED
+Test copying dangling external link (no obj) directly with -f ext
+Testing ../../src/h5copy/h5copy -f ext -i ./tmp/h5copy_extlinks_src.h5 PASSED
+Test copying dangling external link (no file) directly without -f ext
+Testing ../../src/h5copy/h5copy -v -i ./tmp/h5copy_extlinks_src.h5 -o  PASSED
+Test copying dangling external link (no file) directly with -f ext
+Testing ../../src/h5copy/h5copy -f ext -i ./tmp/h5copy_extlinks_src.h5 PASSED
+Test copying a group contains external links without -f ext
+Testing ../../src/h5copy/h5copy -v -i ./tmp/h5copy_extlinks_src.h5 -o  PASSED
+Test copying a group contains external links with -f ext
+Testing ../../src/h5copy/h5copy -f ext -i ./tmp/h5copy_extlinks_src.h5 PASSED
+Test copying object into group which doesn't exist, without -p
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/h5copy_ PASSED
+Verifying output files ./tmp/h5copy_misc1.err ./tmp/h5copy_misc1.out.a PASSED
+Test copying objects to the same file 
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/samefilTesting ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/samefil PASSED
+Verifying h5diff output ./tmp/samefile1.out.h5 ./tmp/samefile1.out.h5  PASSED
+Testing ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/samefilTesting ../../src/h5copy/h5copy -i ./tmp/h5copytst.h5 -o ./tmp/samefil PASSED
+Verifying h5diff output ./tmp/samefile2.out.h5 ./tmp/samefile2.out.h5  PASSED
+All h5copy tests passed.
+
+Finished testing testh5copy.sh 
+============================

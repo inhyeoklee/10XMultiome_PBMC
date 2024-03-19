@@ -1,0 +1,170 @@
+---
+title: "CellChat"
+output: html_document
+date: "2024-01-30"
+---
+
+Loading libraries
+```{r}
+# CellChat dependencies
+# BiocManager::install("ComplexHeatmap")
+# BiocManager::install("BiocNeighbors")
+
+# CellChat Installation
+# remotes::install_github("sqjin/CellChat")
+library(CellChat)
+library(Seurat)
+```
+
+```{r}
+# Call the Seurat Object
+pbmc.rna <- readRDS("/home/tjq4954/Multiome_PBMC/Data/rna/pbmc.rna.rds")
+
+# Remove platelets and erythrocytes
+DefaultAssay(pbmc.rna) <- "SCT"
+Idents(pbmc.rna) <- "predicted.celltype.l2"
+pbmc.rna <- subset(pbmc.rna, idents = c("CD14 Mono", "CD16 Mono", "CD4 TCM",
+                                        "CD8 TCM", "CD8 TEM", "CD8 Naive", "dnT",
+                                        "B naive", "B intermediate"))
+unique(pbmc.rna$predicted.celltype.l2)
+
+# Subset pbmc.rna object into case and control groups
+control_samples <- c("RNA_280", "RNA_302")
+case_samples <- c("RNA_72", "RNA_203", "RNA_271", "RNA_294")
+pbmc.rna_control <- subset(pbmc.rna, subset = orig.ident %in% control_samples)
+pbmc.rna_case <- subset(pbmc.rna, subset = orig.ident %in% case_samples)
+pbmc.rna_control$cell_type <- pbmc.rna_control$predicted.celltype.l2
+pbmc.rna_case$cell_type <- pbmc.rna_case$predicted.celltype.l2
+```
+
+Control group analysis
+```{r}
+# Create CellChat object for control group
+cellchat_control <- createCellChat(object = pbmc.rna_control, meta = pbmc.rna_control@meta.data, group.by = "cell_type")
+
+# Set the ligand-receptor interaction database for control
+CellChatDB.use <- CellChatDB.human
+showDatabaseCategory(CellChatDB.use)
+
+# Using a subset of CellChatDB for cell-cell communication analysis in control group
+# DB contains "Secreted Signaling","ECM-Receptor","Cell-Cell Contact" 
+# CellChatDB.use <- subsetDB(CellChatDB.human, search = "Secreted Signaling")
+
+# Add the Secreted Signaling database in the CellChat object for control
+cellchat_control@DB <- CellChatDB.use
+
+# Pre-process the expression data for control
+cellchat_control <- subsetData(cellchat_control)
+cellchat_control <- identifyOverExpressedGenes(cellchat_control)
+cellchat_control <- identifyOverExpressedInteractions(cellchat_control)
+
+# Project gene expression data onto protein-protein interaction (PPI) for control
+cellchat_control <- projectData(cellchat_control, PPI.human)
+
+# Compute communication probabilities for control
+cellchat_control <- computeCommunProb(cellchat_control)
+
+# Filter out the cell-cell communication if there are only few number of cells in certain cell groups for control
+cellchat_control <- filterCommunication(cellchat_control, min.cells = 10)
+
+# Infer the cell-cell communication at a signaling pathway level for control
+cellchat_control <- computeCommunProbPathway(cellchat_control)
+
+# Calculate the aggregated cell-cell communication network for control
+cellchat_control <- aggregateNet(cellchat_control)
+cellchat_control@net$count
+cellchat_control@net$weight
+
+# Save CellChat Object for control group
+setwd("/home/tjq4954/Multiome_PBMC/CellChat")
+saveRDS(cellchat_control, file = "control_cellchat.rds")
+
+# Recall Control CellChat object if needed
+# cellchat_control <- readRDS("control_cellchat.rds")
+```
+
+Case group analysis
+```{r}
+# Create CellChat object for case group
+cellchat_case <- createCellChat(object = pbmc.rna_case, meta = pbmc.rna_case@meta.data, group.by = "cell_type")
+
+# Set the ligand-receptor interaction database for case
+CellChatDB.use <- CellChatDB.human
+
+# Using a subset of CellChatDB for cell-cell communication analysis in case group
+# CellChatDB.use <- subsetDB(CellChatDB.human, search = "Secreted Signaling")
+
+# Add the Secreted Signaling database in the CellChat object for case
+cellchat_case@DB <- CellChatDB.use
+
+# Pre-process the expression data for case
+cellchat_case <- subsetData(cellchat_case)
+cellchat_case <- identifyOverExpressedGenes(cellchat_case)
+cellchat_case <- identifyOverExpressedInteractions(cellchat_case)
+
+# Project gene expression data onto protein-protein interaction (PPI) for case
+cellchat_case <- projectData(cellchat_case, PPI.human)
+
+# Compute communication probabilities for case
+cellchat_case <- computeCommunProb(cellchat_case, raw.use = TRUE)
+
+# Filter out the cell-cell communication if there are only few number of cells in certain cell groups for case
+cellchat_case <- filterCommunication(cellchat_case, min.cells = 10)
+
+# Infer the cell-cell communication at a signaling pathway level for case
+cellchat_case <- computeCommunProbPathway(cellchat_case)
+
+# Calculate the aggregated cell-cell communication network for case
+cellchat_case <- aggregateNet(cellchat_case)
+cellchat_case@net$count
+cellchat_case@net$weight
+
+# Save CellChat Object for case group
+setwd("/home/tjq4954/Multiome_PBMC/CellChat")
+saveRDS(cellchat_case, file = "case_cellchat.rds")
+
+# Recall Case CellChat object if needed
+# cellchat_case <- readRDS("case_cellchat.rds")
+```
+
+Comparative Network Visualization
+```{r}
+# Merge two objects
+object.list <- list(case = cellchat_case, control = cellchat_control)
+cellchat <- mergeCellChat(object.list, add.names = names(object.list), cell.prefix = TRUE)
+
+# Set the working directory for saving visual outputs
+setwd("/home/tjq4954/Multiome_PBMC/CellChat")
+
+# Calculate group size for each cellchat object
+groupSize_control <- as.numeric(table(cellchat_control@idents))
+groupSize_case <- as.numeric(table(cellchat_case@idents))
+
+# Save the Control network plot
+png("Control_NetworkPlot.png", width=8, height=8, units="in", res=600)
+netVisual_circle(cellchat@net$control$weight, vertex.weight = groupSize_control, 
+   weight.scale = T, label.edge= F, title.name = "Control: Interaction Strength")
+dev.off()
+
+# Save the Case network plot
+png("Case_NetworkPlot.png", width=8, height=8, units="in", res=600)
+netVisual_circle(cellchat@net$case$weight, vertex.weight = groupSize_case, 
+   weight.scale = T, label.edge= F, title.name = "Case: Interaction Strength")
+dev.off()
+```
+
+Visualizations
+```{r}
+# Set the working directory for saving visual outputs
+setwd("/home/tjq4954/Multiome_PBMC/CellChat")
+
+# Save the Control chord diagram
+png("ChordDiagram_Control.png", width=14, height=14, units="in", res=600)
+netVisual_chord_gene(cellchat_control, lab.cex = 1, link.target.prop = TRUE, show.legend=TRUE, thresh = 0.05)
+dev.off()
+
+# Save the Case chord diagram
+png("ChordDiagram_Case.png", width=9, height=9, units="in", res=600)
+netVisual_chord_gene(cellchat_case, lab.cex = 1, link.target.prop = TRUE, show.legend=TRUE, thresh = 0.05)
+dev.off()
+```

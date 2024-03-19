@@ -1,0 +1,10 @@
+============================
+test_libinfo.sh  Test Log
+============================
+Check file ../src/.libs/libhdf5.so.310                                 PASSED
+Check file ../src/.libs/libhdf5.a                                      PASSED
+Check file testhdf5                                                    -SKIP-
+No error encountered
+
+Finished testing test_libinfo.sh 
+============================

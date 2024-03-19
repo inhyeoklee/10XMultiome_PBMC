@@ -1,0 +1,12 @@
+============================
+Test log for timer 
+============================
+Testing platform-independent timer functionality.
+Testing Time string formats                                            PASSED
+Testing system/user times                                              PASSED
+Testing elapsed times                                                  PASSED
+Testing timer functionality                                            PASSED
+All platform-independent timer tests passed.
+
+Finished testing timer 
+============================

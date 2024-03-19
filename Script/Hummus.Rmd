@@ -1,0 +1,27 @@
+---
+title: "Hummus Implementation"
+output: html_document
+date: "2024-03-10"
+---
+
+```{r}
+# remotes::install_github("HenrikBengtsson/parallelly", ref="develop")
+library(parallelly)
+library(future)
+
+parallelly::availableCores(which = "all")
+plan(multisession, workers = parallelly::availableCores())
+
+# When you're done, clean up the cluster
+stopImplicitCluster()
+```
+
+```{r}
+plan(multisession, workers = parallelly::availableCores())
+# remotes::install_github("cantinilab/HuMMuS")
+library(HuMMuS)
+
+# BiocManager::install(c("Gviz", "GenomicRanges", "rtracklayer"))
+devtools::install_github("cole-trapnell-lab/cicero-release", ref = "monocle3")
+library(cicero)
+```

@@ -1,0 +1,9 @@
+============================
+test_error.sh  Test Log
+============================
+Testing err_compat                                                     PASSED
+Testing error_test                                                     PASSED
+All Error API tests passed.
+
+Finished testing test_error.sh 
+============================

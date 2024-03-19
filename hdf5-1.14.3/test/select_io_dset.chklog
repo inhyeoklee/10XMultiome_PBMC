@@ -1,0 +1,174 @@
+============================
+Test log for select_io_dset 
+============================
+Testing for selection I/O with default chunk cache, with contiguous dataset, without data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with default chunk cache, with contiguous dataset, without data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with default chunk cache, with contiguous dataset, data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with default chunk cache, with contiguous dataset, data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with default chunk cache, with chunked dataset, without data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with default chunk cache, with chunked dataset, without data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with default chunk cache, with chunked dataset, data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with default chunk cache, with chunked dataset, data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with 0 chunk cache, with contiguous dataset, without data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with 0 chunk cache, with contiguous dataset, without data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with 0 chunk cache, with contiguous dataset, data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with 0 chunk cache, with contiguous dataset, data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with 0 chunk cache, with chunked dataset, without data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with 0 chunk cache, with chunked dataset, without data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         PASSED
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        PASSED
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       PASSED
+  Testing multi-datasets: type conv + size change + no bkg buffer      PASSED
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   PASSED
+Testing for selection I/O with 0 chunk cache, with chunked dataset, data transform, and without modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+Testing for selection I/O with 0 chunk cache, with chunked dataset, data transform, and with modifying write buffers
+  Testing No type conversion (null case)                               PASSED
+  Testing No size change, no background buffer                         -SKIP-
+  Testing Larger memory type, no background buffer                     PASSED
+  Testing Smaller memory type, no background buffer                    PASSED
+  Testing Compound types with background buffer                        -SKIP-
+  Testing multi-datasets: type conv + no bkg buffer                    PASSED
+  Testing multi-datasets: type conv + bkg buffer                       -SKIP-
+  Testing multi-datasets: type conv + size change + no bkg buffer      -SKIP-
+  Testing multi-datasets: no conv + conv without bkg + conv with bkg   -SKIP-
+
+Testing H5Pget/set_selection_io_mode()                                 PASSED
+
+Testing H5Pget_no_selection_io_cause()                                 PASSED
+
+===================================
+All selection I/O dataset tests passed.
+===================================
+
+Finished testing select_io_dset 
+============================

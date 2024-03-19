@@ -1,0 +1,13 @@
+============================
+Test log for test_file_image 
+============================
+Testing get file images                                                PASSED
+Testing open file images and check image copies                        PASSED
+Testing read file images                                               PASSED
+Testing write and extend file images                                   PASSED
+Testing read extended file images                                      PASSED
+Testing close file images                                              PASSED
+File image tests passed.
+
+Finished testing test_file_image 
+============================

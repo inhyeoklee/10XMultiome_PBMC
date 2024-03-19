@@ -1,0 +1,232 @@
+============================
+Test log for mdset 
+============================
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      No
+  I/O type:        Single
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Single
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      Yes
+  I/O type:        Single
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Single
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Multi
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     Mixed
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Multi
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     Mixed
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      No
+  I/O type:        Single
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Single
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      Yes
+  I/O type:        Single
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Single
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Multi
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     Mixed
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Contiguous
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     No
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Multi
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     Mixed
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Single
+  Type conversion: No
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Single
+  Type conversion: No
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: No
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Single
+  Type conversion: Yes
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Single
+  Type conversion: Yes
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      No
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+
+Configuration:
+  Layout:          Chunked
+  Shape same:      Yes
+  I/O type:        Multi
+  Type conversion: Yes
+  Data filter:     Yes
+Testing random I/O                                                     PASSED
+Testing mdset location                                                 PASSED
+All multi dataset tests passed.
+
+Finished testing mdset 
+============================

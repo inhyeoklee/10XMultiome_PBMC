@@ -1,0 +1,38 @@
+---
+title: "bindingmotif"
+output: html_document
+date: "2024-02-27"
+---
+
+```{r}
+# Loading necessary libraries for motif analysis
+library(Signac)
+library(JASPAR2020)
+library(TFBSTools)
+library(BSgenome.Hsapiens.UCSC.hg38)
+```
+
+```{r}
+# Read in the Seurat objects for case and control that have been processed previously
+pbmc_case <- readRDS("/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks_case.rds")
+pbmc_control <- readRDS("/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks_control.rds")
+```
+
+```{r}
+# Find motifs in the peak regions
+pbmc_case <- FindMotifs(
+  object = pbmc_case,
+  assay = 'peaks',
+  background = "matched"
+)
+
+pbmc_control <- FindMotifs(
+  object = pbmc_control,
+  assay = 'peaks',
+  background = "matched"
+)
+
+# Visualize motif enrichment
+head(Motif(pbmc_case))
+head(Motif(pbmc_control))
+```

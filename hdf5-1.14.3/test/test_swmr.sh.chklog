@@ -1,0 +1,327 @@
+============================
+test_swmr.sh  Test Log
+============================
+
+*******************************************************************************
+** Loop testing parameters: -i ea 
+*******************************************************************************
+
+
+###############################################################################
+## Generator test
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 92841
+launch the swmr_generator with SWMR_WRITE
+Using generator random seed (used in sparse test only): 269323
+
+###############################################################################
+## Use H5Fstart_swmr_write() to enable SWMR writing mode
+###############################################################################
+launch the swmr_start_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using reader random seed: 201354
+Using reader random seed: 202400
+Using reader random seed: 211463
+Using reader random seed: 201925
+Using reader random seed: 227521
+Using writer random seed: 562148
+
+###############################################################################
+## Writer test - test expanding the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 809489
+launch the swmr_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using writer random seed: 105104
+Using reader random seed: 522809
+Using reader random seed: 527089
+Using reader random seed: 513403
+Using reader random seed: 530757
+Using reader random seed: 466993
+
+###############################################################################
+## Remove test - test shrinking the dataset
+###############################################################################
+launch the swmr_remove_writer
+Using writer random seed: 576011
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 61432
+Using reader random seed: 86368
+Using reader random seed: 90179
+Using reader random seed: 99970
+Using reader random seed: 101829
+
+###############################################################################
+## Add/remove test - randomly grow or shrink the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 199092
+launch the swmr_writer
+Using writer random seed: 358180
+launch the swmr_addrem_writer
+Using writer random seed: 366275
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 842572
+Using reader random seed: 852388
+Using reader random seed: 852652
+Using reader random seed: 852800
+Using reader random seed: 862868
+
+###############################################################################
+## Sparse writer test - test writing to random locations in the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 984936
+launch the swmr_sparse_writer
+SWMR_WRITER_MESSAGE is found
+launch 3 swmr_sparse_readers
+
+*******************************************************************************
+** Loop testing parameters: -i ea -c 5
+*******************************************************************************
+
+
+###############################################################################
+## Generator test
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 111969
+launch the swmr_generator with SWMR_WRITE
+Using generator random seed (used in sparse test only): 283083
+
+###############################################################################
+## Use H5Fstart_swmr_write() to enable SWMR writing mode
+###############################################################################
+launch the swmr_start_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using writer random seed: 477669
+Using reader random seed: 924086
+Using reader random seed: 946914
+Using reader random seed: 948391
+Using reader random seed: 959364
+Using reader random seed: 957082
+
+###############################################################################
+## Writer test - test expanding the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 77708
+launch the swmr_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using reader random seed: 640731
+Using reader random seed: 642839
+Using reader random seed: 654971
+Using reader random seed: 657790
+Using reader random seed: 668874
+Using writer random seed: 272649
+
+###############################################################################
+## Remove test - test shrinking the dataset
+###############################################################################
+launch the swmr_remove_writer
+Using writer random seed: 989476
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 339154
+Using reader random seed: 342509
+Using reader random seed: 347447
+Using reader random seed: 357422
+Using reader random seed: 366654
+
+###############################################################################
+## Add/remove test - randomly grow or shrink the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 459342
+launch the swmr_writer
+Using writer random seed: 613766
+launch the swmr_addrem_writer
+Using writer random seed: 420603
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 793857
+Using reader random seed: 808089
+Using reader random seed: 817421
+Using reader random seed: 820736
+Using reader random seed: 826033
+
+###############################################################################
+## Sparse writer test - test writing to random locations in the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 219817
+launch the swmr_sparse_writer
+SWMR_WRITER_MESSAGE is found
+launch 3 swmr_sparse_readers
+
+*******************************************************************************
+** Loop testing parameters: -i b2 
+*******************************************************************************
+
+
+###############################################################################
+## Generator test
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 167553
+launch the swmr_generator with SWMR_WRITE
+Using generator random seed (used in sparse test only): 292091
+
+###############################################################################
+## Use H5Fstart_swmr_write() to enable SWMR writing mode
+###############################################################################
+launch the swmr_start_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using writer random seed: 432122
+Using reader random seed: 925774
+Using reader random seed: 962052
+Using reader random seed: 954310
+Using reader random seed: 954662
+Using reader random seed: 968084
+
+###############################################################################
+## Writer test - test expanding the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 69446
+launch the swmr_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using writer random seed: 284105
+Using reader random seed: 578422
+Using reader random seed: 701703
+Using reader random seed: 703584
+Using reader random seed: 702053
+Using reader random seed: 721113
+
+###############################################################################
+## Remove test - test shrinking the dataset
+###############################################################################
+launch the swmr_remove_writer
+Using writer random seed: 839672
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 294855
+Using reader random seed: 300505
+Using reader random seed: 316992
+Using reader random seed: 325636
+Using reader random seed: 339502
+
+###############################################################################
+## Add/remove test - randomly grow or shrink the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 433008
+launch the swmr_writer
+Using writer random seed: 619488
+launch the swmr_addrem_writer
+Using writer random seed: 999852
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 461175
+Using reader random seed: 463425
+Using reader random seed: 467992
+Using reader random seed: 483265
+Using reader random seed: 493323
+
+###############################################################################
+## Sparse writer test - test writing to random locations in the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 48032
+launch the swmr_sparse_writer
+SWMR_WRITER_MESSAGE is found
+launch 3 swmr_sparse_readers
+
+*******************************************************************************
+** Loop testing parameters: -i b2 -c 5
+*******************************************************************************
+
+
+###############################################################################
+## Generator test
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 45491
+launch the swmr_generator with SWMR_WRITE
+Using generator random seed (used in sparse test only): 218533
+
+###############################################################################
+## Use H5Fstart_swmr_write() to enable SWMR writing mode
+###############################################################################
+launch the swmr_start_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using writer random seed: 366196
+Using reader random seed: 772557
+Using reader random seed: 774935
+Using reader random seed: 790228
+Using reader random seed: 806134
+Using reader random seed: 802548
+
+###############################################################################
+## Writer test - test expanding the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 905661
+launch the swmr_writer
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_readers
+Using reader random seed: 464961
+Using reader random seed: 525722
+Using reader random seed: 512170
+Using reader random seed: 514885
+Using reader random seed: 534893
+Using writer random seed: 98455
+
+###############################################################################
+## Remove test - test shrinking the dataset
+###############################################################################
+launch the swmr_remove_writer
+Using writer random seed: 265538
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 696145
+Using reader random seed: 708386
+Using reader random seed: 715718
+Using reader random seed: 721208
+Using reader random seed: 731388
+
+###############################################################################
+## Add/remove test - randomly grow or shrink the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 829738
+launch the swmr_writer
+Using writer random seed: 178693
+launch the swmr_addrem_writer
+Using writer random seed: 660640
+SWMR_WRITER_MESSAGE is found
+launch 5 swmr_remove_readers
+Using reader random seed: 44223
+Using reader random seed: 50813
+Using reader random seed: 79155
+Using reader random seed: 88313
+Using reader random seed: 103737
+
+###############################################################################
+## Sparse writer test - test writing to random locations in the dataset
+###############################################################################
+launch the swmr_generator
+Using generator random seed (used in sparse test only): 848017
+launch the swmr_sparse_writer
+SWMR_WRITER_MESSAGE is found
+launch 3 swmr_sparse_readers
+SWMR tests passed.
+
+Finished testing test_swmr.sh 
+============================

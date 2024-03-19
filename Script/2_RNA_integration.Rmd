@@ -1,0 +1,145 @@
+---
+title: "RNA_integration"
+output: html_document
+date: "2024-01-03"
+---
+
+Loading libraries
+```{r}
+library(Seurat)
+library(SeuratDisk)
+library(SeuratObject)
+library(SeuratData)
+library(Signac)
+library(GenomicRanges)
+library(future)
+library(EnsDb.Hsapiens.v86)
+library(Azimuth)
+library(BSgenome.Hsapiens.UCSC.hg38)
+
+# plan("multisession", workers = 115)
+# options(future.globals.maxSize = 100000 * 1024^2) # for 100 Gb RAM
+```
+
+process_rna function
+```{r}
+process_rna <- function(sample_id) {
+  # Construct file paths
+  rna_path <- paste0("/home/tjq4954/Multiome_PBMC/Data/multiome_", sample_id, "/filtered_feature_bc_matrix.h5")
+  # Load RNA-seq data
+  rna_sample <- Read10X_h5(filename = rna_path)
+  
+  rna_seurat <- CreateSeuratObject(counts = rna_sample, project = paste0("RNA_", sample_id)
+                                   # , min.cells = 3, min.features = 200
+                                   )
+
+  # Delete an interfering layer -- can later add ATAC info
+  rna_seurat[["RNA"]]$counts.Peaks <- NULL
+  
+  # This assumes that your mitochondrial genes start with "MT-"
+  mitochondrial_genes <- rownames(rna_seurat)[grepl("^MT-", rownames(rna_seurat))]
+  rna_seurat[["percent.mt"]] <- PercentageFeatureSet(rna_seurat, features = mitochondrial_genes)
+  
+  # QC steps: Filter cells, Normalize, Find variable features, Scale data
+  # rna_seurat <- subset(rna_seurat, subset = nFeature_RNA > 200 & nFeature_RNA < 5000 & percent.mt < 10)
+  print(paste("Subset done for sample", sample_id))
+  
+  # Get the number of cells in each Seurat object
+  rna_cell_count <- length(colnames(rna_seurat))
+  print(paste("RNA cell count:", rna_cell_count))
+
+  rna_seurat <- SCTransform(rna_seurat, vars.to.regress = "percent.mt", verbose = FALSE)
+  rna_seurat <- RunPCA(rna_seurat, verbose = FALSE)
+  rna_seurat <- RunUMAP(rna_seurat, dims = 1:30, verbose = FALSE)
+  
+  return(rna_seurat)
+}
+```
+
+Sample processing
+```{r}
+# Define Sample IDs
+samples <- c("280", "302", "72", "203", "271", "294")
+
+# Process each RNA-seq sample
+rna_objects <- lapply(samples, process_rna)
+
+# Save Seurat Objects
+# Specify the full path with the filename for the RDS file
+save_path <- "/home/tjq4954/Multiome_PBMC/Data/rna/rna_objects.rds"
+# Save the Seurat object as an RDS file
+saveRDS(rna_objects, file = save_path)
+rna_objects <- readRDS("/home/tjq4954/Multiome_PBMC/Data/rna/rna_objects.rds")
+
+library(ggplot2)
+library(dplyr)
+
+# Initialize an empty data frame to store percent.mt and sample names
+percent_mt_data <- data.frame(percent.mt = numeric(), SampleName = factor())
+
+# Loop through each object to extract percent.mt and orig.ident
+for (i in seq_along(rna_objects)) {
+  DefaultAssay(rna_objects[[i]]) <- "RNA"
+  # Ensure percent.mt is calculated
+  rna_objects[[i]][["percent.mt"]] <- PercentageFeatureSet(rna_objects[[i]], pattern = "^MT-")
+  
+  # Extract percent.mt and orig.ident
+  temp_data <- FetchData(rna_objects[[i]], vars = c("percent.mt", "orig.ident"))
+  
+  # Combine
+  percent_mt_data <- rbind(percent_mt_data, temp_data)
+}
+
+# Rename for clarity
+colnames(percent_mt_data)[2] <- "SampleName"
+
+# Create the violin plot
+ggplot(percent_mt_data, aes(x = SampleName, y = percent.mt, fill = SampleName)) +
+  geom_violin(trim = FALSE) +
+  scale_fill_brewer(palette = "Set3") + # Optional: Use a color palette for aesthetics
+  labs(title = "Percentage of Mitochondrial Genes -- Before Any Normalization", y = "Percent MT", x = "Sample Name") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Integration
+```{r}
+plan("multisession", workers = 20)
+options(future.globals.maxSize = 100000 * 1024^2) # for 100 Gb RAM
+
+  # Select integration features
+  integration.features <- SelectIntegrationFeatures(object.list = rna_objects, nfeatures = 3000)
+
+  # Prep for SCT integration
+  pbmc.rna <- PrepSCTIntegration(object.list = rna_objects, anchor.features = integration.features, verbose = FALSE)
+
+  # Find integration anchors
+  anchors <- FindIntegrationAnchors(object.list = pbmc.rna, normalization.method = "SCT", anchor.features = integration.features, verbose = FALSE)
+
+  # Integrate data
+  pbmc.rna <- IntegrateData(anchorset = anchors, normalization.method = "SCT", verbose = FALSE)
+
+  # Run PCA
+  pbmc.rna <- RunPCA(pbmc.rna, verbose = FALSE)
+
+  # Find neighbors
+  pbmc.rna <- FindNeighbors(pbmc.rna, dims = 1:30)
+
+  # Find clusters
+  pbmc.rna <- FindClusters(pbmc.rna, resolution = 0.6)
+  
+  # Azimuth annotation
+  pbmc.rna <- RunAzimuth(pbmc.rna, reference = "pbmcref")
+```
+
+Saving the Seurat object
+```{r}
+# Specify the full path with the filename for the RDS file
+save_path <- "/home/tjq4954/Multiome_PBMC/Data/rna/pbmc.rna.rds"
+# Save the Seurat object as an RDS file
+saveRDS(pbmc.rna, file = save_path)
+```
+
+```{r}
+sessionInfo()
+```
