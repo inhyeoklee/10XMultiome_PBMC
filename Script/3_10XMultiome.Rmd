@@ -28,8 +28,8 @@ library(BSgenome.Hsapiens.UCSC.hg38)
 Merging objects
 ```{r}
 # Load the ATAC and RNA objects
-pbmc.atac <- readRDS("/home/tjq4954/Multiome_PBMC/Data/atac/pbmc.atac.rds")
-pbmc.rna <- readRDS("/home/tjq4954/Multiome_PBMC/Data/rna/pbmc.rna.rds")
+pbmc.atac <- readRDS("/home/tjq4954/10XMultiome_PBMC/Data/atac/pbmc.atac.rds")
+pbmc.rna <- readRDS("/home/tjq4954/10XMultiome_PBMC/Data/rna/pbmc.rna.rds")
 
 # Check if the cell names are formatted the same
 identical(colnames(pbmc.atac), colnames(pbmc.rna))
@@ -41,7 +41,7 @@ pbmc.rna@meta.data <- cbind(pbmc.rna@meta.data, pbmc.atac@meta.data)
 pbmc <- pbmc.rna
 
 # Specify the full path with the filename for the RDS file
-save_path <- "/home/tjq4954/Multiome_PBMC/Data/pbmc.rds"
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/pbmc.rds"
 # Save the Seurat object as an RDS file
 saveRDS(pbmc, file = save_path)
 ```
@@ -49,7 +49,7 @@ saveRDS(pbmc, file = save_path)
 Quality control
 ```{r}
 library(gridExtra)
-setwd("/home/tjq4954/Multiome_PBMC/Data")
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
 pbmc <- readRDS("pbmc.rds")
 
 # Create some important QC metrics
@@ -91,10 +91,10 @@ table(pbmc$predicted.celltype.l2, pbmc$group)
 table(pbmc$predicted.celltype.l2, pbmc$orig.ident)
 celltype_ident_table <- table(pbmc$predicted.celltype.l2, pbmc$orig.ident)
 table_df <- as.data.frame.matrix(celltype_ident_table)
-write.csv(table_df, "/home/tjq4954/Multiome_PBMC/Visuals/celltype_ident_table.csv", row.names = TRUE)
+write.csv(table_df, "/home/tjq4954/10XMultiome_PBMC/Visuals/celltype_ident_table.csv", row.names = TRUE)
 
 # Specify the full path with the filename for the RDS file
-save_path <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_subset.rds"
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/pbmc_subset.rds"
 # Save the Seurat object as an RDS file
 saveRDS(pbmc, file = save_path)
 ```
@@ -105,7 +105,7 @@ Peak calling
 # library(ArchR)
 # ArchR::installExtraPackages()
 
-setwd("/home/tjq4954/Multiome_PBMC/Data")
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
 pbmc <- readRDS("pbmc_subset.rds")
 
 peaks <- CallPeaks(pbmc
@@ -131,7 +131,7 @@ pbmc[["peaks"]] <- CreateChromatinAssay(
 )
 
 # Specify the full path with the filename for the RDS file
-save_path <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks.rds"
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/pbmc_peaks.rds"
 # Save the Seurat object as an RDS file
 saveRDS(pbmc, file = save_path)
 ```
@@ -185,24 +185,24 @@ pbmc_case[["peaks"]] <- CreateChromatinAssay(
 )
 
 # Specify the full path with the filename for the RDS file
-save_path_case <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks_case.rds"
+save_path_case <- "/home/tjq4954/10XMultiome_PBMC/Data/pbmc_peaks_case.rds"
 # Save the Seurat object as an RDS file
 saveRDS(pbmc_case, file = save_path_case)
 
 # Specify the full path with the filename for the RDS file
-save_path_control <- "/home/tjq4954/Multiome_PBMC/Data/pbmc_peaks_control.rds"
+save_path_control <- "/home/tjq4954/10XMultiome_PBMC/Data/pbmc_peaks_control.rds"
 # Save the Seurat object as an RDS file
 saveRDS(pbmc_control, file = save_path_control)
 ```
 
 DEG & DA Analysis
 ```{r}
-# setwd("/home/tjq4954/Multiome_PBMC/Data")
+# setwd("/home/tjq4954/10XMultiome_PBMC/Data")
 # pbmc <- readRDS("pbmc_peaks.rds")
 
-# setwd("/home/tjq4954/Multiome_PBMC/Data")
+# setwd("/home/tjq4954/10XMultiome_PBMC/Data")
 # pbmc_control <- readRDS("pbmc_peaks_control.rds")
-# setwd("/home/tjq4954/Multiome_PBMC/Data")
+# setwd("/home/tjq4954/10XMultiome_PBMC/Data")
 # pbmc_case <- readRDS("pbmc_peaks_case.rds")
 
 # DefaultAssay(pbmc) <- "RNA" # already performed in the RNA integration script
@@ -261,10 +261,10 @@ DimPlot(pbmc, label = TRUE, repel = TRUE, reduction = "umap", group.by = "predic
 
 # WNN UMAP - Cell Type
 plot1 <- DimPlot(pbmc, label = TRUE, repel = TRUE, reduction = "umap", group.by = "predicted.celltype.l2") + NoLegend() + labs(title = "Joint UMAP")
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/JointUMAP_CellType.png", plot = plot1, width = 10, height = 8, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/JointUMAP_CellType.png", plot = plot1, width = 10, height = 8, dpi = 600)
 # WNN UMAP - Sample ID
 plot2 <- DimPlot(pbmc, label = TRUE, repel = TRUE, reduction = "umap", group.by = "orig.ident") + NoLegend()
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/JointUMAP_SampleID.png", plot = plot2, width = 10, height = 8, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/JointUMAP_SampleID.png", plot = plot2, width = 10, height = 8, dpi = 600)
 ```
 
 Coverage Plot
@@ -527,12 +527,12 @@ combined_p5 <- p5_case + p5_control + plot_layout(ncol = 1)
 combined_p6 <- p6_case + p6_control + plot_layout(ncol = 1)
 
 # Save the combined plots
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_PSBM9.png", plot = combined_p1, width = 9, height = 15, dpi = 600)
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_IL40.png", plot = combined_p2, width = 9, height = 15, dpi = 600)
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_IL1B.png", plot = combined_p3, width = 7, height = 8, dpi = 600)
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_IL10.png", plot = combined_p4, width = 9, height = 15, dpi = 600)
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_HIF1A.png", plot = combined_p5, width = 9, height = 15, dpi = 600)
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_LYZ.png", plot = combined_p6, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_PSBM9.png", plot = combined_p1, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_IL40.png", plot = combined_p2, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_IL1B.png", plot = combined_p3, width = 7, height = 8, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_IL10.png", plot = combined_p4, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_HIF1A.png", plot = combined_p5, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_LYZ.png", plot = combined_p6, width = 9, height = 15, dpi = 600)
 
 # table(pbmc$orig.ident)
 ```
@@ -568,8 +568,8 @@ HIF1A_control <- CombineTracks(
 HIF1A_control <- HIF1A_control + plot_annotation(title = "HIF1A Coverage Plot with Peak Links - Control")
 
 # Save the combined plots
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_HIF1A_CaseLinks.png", plot = HIF1A_case, width = 9, height = 15, dpi = 600)
-ggsave(filename = "/home/tjq4954/Multiome_PBMC/Visuals/CoveragePlot_HIF1A_ControlLinks.png", plot = HIF1A_control, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_HIF1A_CaseLinks.png", plot = HIF1A_case, width = 9, height = 15, dpi = 600)
+ggsave(filename = "/home/tjq4954/10XMultiome_PBMC/Visuals/CoveragePlot_HIF1A_ControlLinks.png", plot = HIF1A_control, width = 9, height = 15, dpi = 600)
 ```
 
 Volcano Plot for monocytes -- to search for interesting genes worth running coverage plots
@@ -621,8 +621,8 @@ AA <- EnhancedVolcano(markers,
                 xlim = c(-5,5))
 
 # Define file path and name for the saved plot
-output_file_A <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_Monocytes.png"
-output_file_AA <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_Monocytes_NoLabels.png"
+output_file_A <- "/home/tjq4954/10XMultiome_PBMC/Visuals/VolcanoPlot_Monocytes.png"
+output_file_AA <- "/home/tjq4954/10XMultiome_PBMC/Visuals/VolcanoPlot_Monocytes_NoLabels.png"
 
 # Save the plot
 ggsave(filename = output_file_A, plot = A, width = 10, height = 8, dpi = 600)
@@ -696,14 +696,14 @@ CC <- EnhancedVolcano(markers_cd14,
                 xlim = c(-5,5))
 
 # Save the plot
-output_file_B <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD16Monocytes.png"
+output_file_B <- "/home/tjq4954/10XMultiome_PBMC/Visuals/VolcanoPlot_CD16Monocytes.png"
 ggsave(filename = output_file_B, plot = B, width = 10, height = 8, dpi = 600)
-output_file_BB <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD16Monocytes_NoLabels.png"
+output_file_BB <- "/home/tjq4954/10XMultiome_PBMC/Visuals/VolcanoPlot_CD16Monocytes_NoLabels.png"
 ggsave(filename = output_file_BB, plot = BB, width = 10, height = 8, dpi = 600)
 
-output_file_C <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD14Monocytes.png"
+output_file_C <- "/home/tjq4954/10XMultiome_PBMC/Visuals/VolcanoPlot_CD14Monocytes.png"
 ggsave(filename = output_file_C, plot = C, width = 10, height = 8, dpi = 600)
-output_file_CC <- "/home/tjq4954/Multiome_PBMC/Visuals/VolcanoPlot_CD14Monocytes_NoLabels.png"
+output_file_CC <- "/home/tjq4954/10XMultiome_PBMC/Visuals/VolcanoPlot_CD14Monocytes_NoLabels.png"
 ggsave(filename = output_file_CC, plot = CC, width = 10, height = 8, dpi = 600)
 
 ```
@@ -762,7 +762,7 @@ violin_case
 violin_control
 
 # Save the plots if needed
-setwd("/home/tjq4954/Multiome_PBMC/Visuals")
+setwd("/home/tjq4954/10XMultiome_PBMC/Visuals")
 ggsave("violin_case_plots.png", plot = violin_case, width = 15, height = 10, dpi = 600)
 ggsave("violin_control_plots.png", plot = violin_control, width = 15, height = 10, dpi = 600)
 

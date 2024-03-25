@@ -18,10 +18,24 @@ stopImplicitCluster()
 
 ```{r}
 plan(multisession, workers = parallelly::availableCores())
+library(reticulate)
+py_install("hummuspy", envname = "r-reticulate", method="auto")
 # remotes::install_github("cantinilab/HuMMuS")
 library(HuMMuS)
 
 # BiocManager::install(c("Gviz", "GenomicRanges", "rtracklayer"))
 devtools::install_github("cole-trapnell-lab/cicero-release", ref = "monocle3")
 library(cicero)
+```
+
+```{r}
+# Create an hummus object from seurat object
+options(Seurat.object.assay.version = 'v4')
+DefaultAssay(pbmc) <- "RNA"
+new_seurat <- SeuratObject::CreateSeuratObject(pbmc[['RNA']]@counts)
+new_seurat[['peaks']] <- Signac::CreateChromatinAssay(pbmc[['peaks']]@counts (or 'ATAC' depending of the one relevant for you here)
+                                                      
+hummus <- as(pbmc, 'hummus_object')
+
+
 ```
