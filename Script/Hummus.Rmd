@@ -9,6 +9,7 @@ date: "2024-03-10"
 library(parallelly)
 library(future)
 
+# Parallelize the process
 parallelly::availableCores(which = "all")
 plan(multisession, workers = parallelly::availableCores())
 
@@ -18,24 +19,24 @@ stopImplicitCluster()
 
 ```{r}
 plan(multisession, workers = parallelly::availableCores())
-library(reticulate)
-py_install("hummuspy", envname = "r-reticulate", method="auto")
+# remotes::install_version("Seurat", "4.4.0")
 # remotes::install_github("cantinilab/HuMMuS")
 library(HuMMuS)
-
-# BiocManager::install(c("Gviz", "GenomicRanges", "rtracklayer"))
-devtools::install_github("cole-trapnell-lab/cicero-release", ref = "monocle3")
-library(cicero)
 ```
 
+# Create an hummus object from seurat object -> Troubleshooting in progress
 ```{r}
-# Create an hummus object from seurat object
 options(Seurat.object.assay.version = 'v4')
-DefaultAssay(pbmc) <- "RNA"
-new_seurat <- SeuratObject::CreateSeuratObject(pbmc[['RNA']]@counts)
-new_seurat[['peaks']] <- Signac::CreateChromatinAssay(pbmc[['peaks']]@counts (or 'ATAC' depending of the one relevant for you here)
+# SeuratObject::Version(pbmc)
+# SeuratObject::Version(pbmc_new)
+
+# convert a v5 assay to a v3 assay
+DefaultAssay(pbmc) <- "SCT"
+pbmc[["RNA"]] <- as(object = pbmc[["SCT"]], Class = "Assay")
+pbmc[["peaks"]] <- as(object = pbmc[["peaks"]], Class = "Assay")
+
+pbmc_new <- SeuratObject::CreateSeuratObject(pbmc[['RNA']]@counts)
+pbmc_new[['peaks']] <- Signac::CreateChromatinAssay(pbmc[['peaks']]@counts)
                                                       
-hummus <- as(pbmc, 'hummus_object')
-
-
+hummus <- as(pbmc_new, 'hummus_object')
 ```
