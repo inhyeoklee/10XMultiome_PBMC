@@ -1,0 +1,356 @@
+---
+title: "Hummus Implementation"
+output: html_document
+date: "2024-04-20"
+---
+
+```{r}
+# remotes::install_github("HenrikBengtsson/parallelly", ref="develop")
+# install.packages("future")
+library(future)
+library(parallelly)
+
+# Parallelize the process
+# parallelly::availableCores(which = "all")
+# plan(multisession, workers = parallelly::availableCores())
+
+# When you're done, clean up the cluster
+# stopImplicitCluster()
+```
+
+```{r}
+# devtools::install_github("cantinilab/HuMMuS", ref="dev_SeuratV5")
+# BiocManager::install("GENIE3")
+# BiocManager::install("doRNG")
+# devtools::install_github("cole-trapnell-lab/cicero-release", ref = "monocle3")
+
+library(monocle3)
+library(HuMMuS)
+library(GENIE3)
+library(doRNG)
+library(cicero)
+```
+
+# Create an hummus object from seurat object
+```{r}
+hummus_case <- Initiate_Hummus_Object(pbmc_case)
+hummus_control <- Initiate_Hummus_Object(pbmc_control)
+```
+
+# Add genome & motif annotations
+```{r}
+# Get genome annotations and apply to both hummus_case and hummus_control
+genome_annotations <- get_genome_annotations(
+  ensdb_annotations = EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86)
+Signac::Annotation(hummus_case@assays$peaks) <- genome_annotations
+Signac::Annotation(hummus_control@assays$peaks) <- genome_annotations
+rm(genome_annotations)
+
+# Load motif annotations
+hummus_case@motifs_db <- get_tf2motifs()
+hummus_control@motifs_db <- get_tf2motifs()
+```
+
+```{r}
+# Analyze TF-peak interactions
+plan(multisession, workers = parallelly::availableCores())
+hummus_case <- bipartite_tfs2peaks(
+  hummus_object = hummus_case,
+  tf_expr_assay = "SCT",
+  peak_assay = "peaks",
+  tf_multiplex_name = "TF",
+  genome = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
+
+hummus_control <- bipartite_tfs2peaks(
+  hummus_object = hummus_control,
+  tf_expr_assay = "SCT",
+  peak_assay = "peaks",
+  tf_multiplex_name = "TF",
+  genome = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
+
+# Connect peaks to genes
+hummus_case <- bipartite_peaks2genes(
+  hummus_object = hummus_case,
+  gene_assay = "SCT",
+  peak_assay = "peaks",
+  store_network = FALSE)
+
+hummus_control <- bipartite_peaks2genes(
+  hummus_object = hummus_control,
+  gene_assay = "SCT",
+  peak_assay = "peaks",
+  store_network = FALSE)
+
+# Compute TF and gene networks
+hummus_case <- compute_tf_network(hummus_case,
+                                  gene_assay = "SCT",
+                                  verbose = 1,
+                                  multiplex_name = "TF",
+                                  tf_network_name = "TF_network")
+hummus_control <- compute_tf_network(hummus_control,
+                                     gene_assay = "SCT",
+                                     verbose = 1,
+                                     multiplex_name = "TF",
+                                     tf_network_name = "TF_network")
+
+# Compute gene networks
+hummus_case <- compute_gene_network(
+  hummus_case,
+  gene_assay = "SCT",
+  method = "GENIE3",
+  verbose = 1,
+  number_cores = 12,
+  store_network = FALSE,
+  output_file = "gene_network_case.tsv")
+
+hummus_control <- compute_gene_network(
+  hummus_control,
+  gene_assay = "SCT",
+  method = "GENIE3",
+  verbose = 1,
+  number_cores = 12,
+  store_network = FALSE,
+  output_file = "gene_network_control.tsv")
+
+# Save the hummus objects as checkpoints
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/hummus_case.rds"
+saveRDS(hummus_case, file = save_path)
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/hummus_control.rds"
+saveRDS(hummus_control, file = save_path)
+
+# Load the hummus objects
+hummus_case <- readRDS("/home/tjq4954/10XMultiome_PBMC/Data/hummus_case.rds")
+hummus_control <- readRDS("/home/tjq4954/10XMultiome_PBMC/Data/hummus_control.rds")
+
+# Compute ATAC peak networks
+plan(multisession, workers = parallelly::availableCores())
+hummus_case <- compute_atac_peak_network(hummus_case,
+                                         atac_assay = "peaks",
+                                         verbose = 1,
+                                         genome = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
+                                         store_network = FALSE)
+
+hummus_control <- compute_atac_peak_network(hummus_control,
+                                            atac_assay = "peaks",
+                                            verbose = 1,
+                                            genome = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
+                                            store_network = FALSE)
+
+# Save the hummus objects as checkpoints
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/hummus_case.rds"
+saveRDS(hummus_case, file = save_path)
+save_path <- "/home/tjq4954/10XMultiome_PBMC/Data/hummus_control.rds"
+saveRDS(hummus_control, file = save_path)
+
+# Load the hummus objects
+hummus_case <- readRDS("/home/tjq4954/10XMultiome_PBMC/Data/hummus_case.rds")
+hummus_control <- readRDS("/home/tjq4954/10XMultiome_PBMC/Data/hummus_control.rds") 
+
+# Clean up the cluster when you're done
+# stopImplicitCluster()
+
+```
+
+# Save the multilayer information
+```{r}
+library(reticulate)
+use_python("/projects/p31353/tjq4954/conda/experiment/bin/python", required = TRUE)
+py_config()  # To check if the settings are correctly applied
+
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
+save_multilayer(hummus = hummus_case, folder_name = "multilayer_case")
+save_multilayer(hummus = hummus_control, folder_name = "multilayer_control")
+```
+
+# Retrieve target genes
+```{r}
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
+targetgene_case <- define_target_genes(
+  hummus_case,
+  tf_list = list("STAT1", "KAT2A"),
+  multilayer_f = "multilayer_case",
+  rna_multiplex = "SCT",
+  njobs = 1
+  )
+targetgene_control <- define_target_genes(
+  hummus_control,
+  tf_list = list("STAT1", "KAT2A"),
+  multilayer_f = "multilayer_control",
+  rna_multiplex = "SCT",
+  njobs = 1
+  )
+
+
+
+# Filter the list
+library(dplyr)
+
+
+## Case
+top_genes_stat1 <- targetgene_case %>%
+  filter(tf == "STAT1") %>%
+  arrange(desc(score)) %>%
+  slice_head(n = 500)
+
+top_genes_kat2a <- targetgene_case %>%
+  filter(tf == "KAT2A") %>%
+  arrange(desc(score)) %>%
+  slice_head(n = 500)
+
+## Combine the results for the case
+genelist_case <- bind_rows(top_genes_stat1, top_genes_kat2a)
+
+
+## Control
+top_genes_stat1 <- targetgene_control %>%
+  filter(tf == "STAT1") %>%
+  arrange(desc(score)) %>%
+  slice_head(n = 500)
+
+top_genes_kat2a <- targetgene_control %>%
+  filter(tf == "KAT2A") %>%
+  arrange(desc(score)) %>%
+  slice_head(n = 500)
+
+## Combine the results for the control
+genelist_control <- bind_rows(top_genes_stat1, top_genes_kat2a)
+```
+
+# Define GRN
+```{r}
+# options(parallelly.availableCores.methods = "mc.cores")
+# options(mc.cores = 120)
+# plan(multisession, workers = parallelly::availableCores())
+
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
+grn_case <- define_grn(
+  hummus_case,
+  multilayer_f = "multilayer_case",
+  rna_multiplex = "SCT",
+  gene_list = genelist_case$gene,
+  tf_list = list("STAT1"),
+  njobs=20
+)
+
+grn_control <- define_grn(
+  hummus_control,
+  multilayer_f = "multilayer_control",
+  rna_multiplex = "SCT",
+  gene_list = genelist_control$gene,
+  tf_list = list("STAT1","KAT2A"),
+  njobs=20
+)
+
+head(grn_case, 50)
+head(grn_control, 50)
+
+# Save the output to CSV files
+setwd("/home/tjq4954/10XMultiome_PBMC/Data/tables")
+write.csv(grn_case, "tf-gene_case.csv", row.names = FALSE)
+write.csv(grn_control, "tf-gene_control.csv", row.names = FALSE)
+```
+
+# Retrieve enhancers
+```{r}
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
+enhancers_case <- define_enhancers(
+  hummus_case,
+  gene_list = list("IL1B"),
+  multilayer_f = "multilayer_case",
+  rna_multiplex = "SCT"
+  )
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
+enhancers_control <- define_enhancers(
+  hummus_control,
+  gene_list = list("IL1B"),
+  multilayer_f = "multilayer_control",
+  rna_multiplex = "SCT"
+  )
+
+print(enhancers_case)
+print(enhancers_control)
+
+```
+
+# New data frame for overlapping peaks v.s. unique peaks
+```{r}
+# Load the dplyr package
+library(dplyr)
+
+# Assuming your data frames are named enhancers_case and enhancers_control
+# and that both data frames have been loaded correctly
+
+# 1. Find overlapping peaks
+overlapping_peaks <- inner_join(enhancers_case, enhancers_control, by = "peak") %>%
+  select(peak, score = score.x, gene = gene.x) %>%
+  mutate(type = "Overlapping")
+
+# 2. Find unique peaks for case
+unique_case_peaks <- anti_join(enhancers_case, enhancers_control, by = "peak") %>%
+  select(peak, score, gene) %>%
+  mutate(type = "Unique Case")
+
+# 3. Find unique peaks for control
+unique_control_peaks <- anti_join(enhancers_control, enhancers_case, by = "peak") %>%
+  select(peak, score, gene) %>%
+  mutate(type = "Unique Control")
+
+# 4. Combine all data into one data frame
+combined_peaks <- bind_rows(overlapping_peaks, unique_case_peaks, unique_control_peaks)
+
+# Print the combined data frame
+print(combined_peaks)
+
+# Save the output to CSV files
+setwd("/home/tjq4954/10XMultiome_PBMC/Data/tables")
+write.csv(combined_peaks, "gene-peak.csv", row.names = FALSE)
+```
+
+# Retrieve binding regions
+```{r}
+setwd("/home/tjq4954/10XMultiome_PBMC/Data")
+binding_regions_case <- define_binding_regions(
+  hummus_case,
+  multilayer_f = "multilayer_case",
+  rna_multiplex = "SCT",
+  njobs = 25
+  )
+
+binding_regions_control <- define_binding_regions(
+  hummus_control,
+  multilayer_f = "multilayer_control",
+  rna_multiplex = "SCT",
+  njobs = 25
+  )
+
+# Filter the data frame for TFs STAT1 and KAT2A
+tf_case <- binding_regions_case %>%
+  filter(tf %in% c("STAT1", "KAT2A")) %>%
+  select(tf, peak, score)
+
+tf_control <- binding_regions_control %>%
+  filter(tf %in% c("STAT1", "KAT2A")) %>%
+  select(tf, peak, score)
+
+# Print the result
+print(tf_case)
+print(tf_control)
+
+
+# Save the output to CSV files
+setwd("/home/tjq4954/10XMultiome_PBMC/Data/tables")
+write.csv(tf_case, "tf-peak_case.csv", row.names = FALSE)
+write.csv(tf_control, "tf-peak_control.csv", row.names = FALSE)
+```
+
+```{r}
+# Read the outputs
+setwd("/home/tjq4954/10XMultiome_PBMC/Data/tables")
+read.table("tf-peak_case.csv", header = T, sep =",")
+read.table("tf-peak_control.csv", header = T, sep =",")
+read.table("gene-peak.csv", header = T, sep =",")
+read.table("tf-gene_case.csv", header = T, sep =",")
+read.table("tf-gene_case.csv", header = T, sep =",")
+
+```
+
